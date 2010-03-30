@@ -62,7 +62,7 @@ public class Jsc_server {
 	
 	public void listenSocket() {
 		try {
-			System.out.println("Starter socket.");
+			System.out.println("Starting socket.");
 			server = new ServerSocket(srvport); 
 		} catch (IOException e) {
 			System.out.println("Could not listen on port " + srvport);
@@ -110,7 +110,8 @@ class ClientWorker implements Runnable {
 			in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			out = new PrintWriter(client.getOutputStream(), true);
 		} catch (IOException e) {
-			System.out.println("in or out failed");
+			System.out.println("IOException: in or out failed");
+			e.printStackTrace();
 			System.exit(-1);
 		}
 		
@@ -124,14 +125,14 @@ class ClientWorker implements Runnable {
 					mac = in.readLine();
 					nextConfig1 = false;
 					nextConfig2 = true;
-					System.out.println("Mac mottatt: " + mac);
+					System.out.println("MAC address received: " + mac);
 				}
 				else if (nextConfig2)
 				{
 					// Starter på config
 					
 					String name = in.readLine();
-					System.out.println("Navn mottatt: " + name);
+					System.out.println("Name received: " + name);
 					try {
 						mac = mac.replace('.', ':');
 						Machine machine = new Machine(mac, client.getInetAddress().toString(), name);
@@ -161,16 +162,16 @@ class ClientWorker implements Runnable {
 						line.replace(File.pathSeparatorChar, (char)32);
 						try {
 							Machine machine = new Machine(line, client.getInetAddress().getHostAddress(), ""); // Feiler med CanfFindMachine
-							System.out.println("Snakker med " + client.getInetAddress().getHostAddress() + ", " + machine.getName());
+							System.out.println("Talking to " + client.getInetAddress().getHostAddress() + ", " + machine.getName());
 							
 							// Send kommando
 							String a = machine.getCommand();
 							out.println(a);
-							System.out.println("Respons: " + a);
+							System.out.println("Responding with: " + a);
 							machine.saveConfig();
 						} catch (CantFindMachine e) {
-							System.out.println("Snakker med " + client.getInetAddress().getHostAddress() + ", en uidentifisert maskin");
-							System.out.println("Respons: give_config");
+							System.out.println("Talking to " + client.getInetAddress().getHostAddress() + ", en uidentifisert maskin");
+							System.out.println("Responding with: give_config");
 							out.println("give_config");
 						}
 					}
