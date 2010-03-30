@@ -25,6 +25,9 @@ public class Configuration_systray {
 	public String myId;
 	private File file;
 	
+	// Not saved to file
+	public boolean dummy;
+	
 	public Configuration_systray() {
 		this(System.getProperty("user.home") + File.separatorChar + "jsc_systray.config.xml");
 	}

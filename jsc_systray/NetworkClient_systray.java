@@ -54,12 +54,28 @@ public class NetworkClient_systray {
 			if(line.equals(new String("reboot")))
 			{
 				System.out.println("I'm going to reboot...");
-				Systemcom.reboot();
+				if(!config.dummy)
+				{
+					Systemcom.reboot();
+				}
+				else
+				{
+					System.out.println("I'm not. I'm just a dummy. Exiting...");
+					System.exit(1);
+				}
 			}
 			else if(line.equals(new String("shutdown")))
 			{
 				System.out.println("I'm going to shutdown now...");
-				Systemcom.shutdown();
+				if(!config.dummy)
+				{
+					Systemcom.shutdown();
+				}
+				else
+				{
+					System.out.println("I'm not. I'm just a dummy. Exiting...");
+					System.exit(1);
+				}
 			}
 		} catch (IOException e){
 			System.out.println("Read failed");

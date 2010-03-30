@@ -7,12 +7,19 @@ import javax.swing.JFrame;
 public class Systray {
 
 	public static void main(String[] args) {
-		new Systray();
+		
+		boolean dummy;
+		if(args.length > 0 && args[0].equals("-dummy"))
+			dummy = true;
+		else
+			dummy = false;
+		
+		new Systray(dummy);
 	}
 	
 	private static Configuration_systray config;
 	
-	public Systray () {
+	public Systray (boolean dummy) {
 		
 		if(!this.sjekkConfig())
 		{
@@ -48,7 +55,7 @@ public class Systray {
 			config.myName = sc.getMyName();
 			config.srvadr = sc.getSrvadr();
 			config.srvport = sc.getSrvport();
-
+			
 			try {
 				config.saveConfig();
 				System.out.println("Config lagret.");
@@ -59,11 +66,16 @@ public class Systray {
 			
 		}
 
+		config.dummy = dummy;
+
 		System.out.println("ID: " + config.myId);
 		System.out.println("Mac: " + config.myMac);
 		System.out.println("Navn: " + config.myName);
 		System.out.println("Server-adresse: " + config.srvadr);
 		System.out.println("Server-port: " + config.srvport);
+		
+		if(config.dummy)
+			System.out.println("I'M A DUMMY! WILL NOT SHUTDOWN THE COMPUTER WHEN TOLD");
 		
 		new NetworkClient_systray(config);
 	}
