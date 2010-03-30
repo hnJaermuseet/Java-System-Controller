@@ -11,7 +11,7 @@ public class NetworkClient_systray {
 	private String srvadr;
 	private int srvport;
 	
-	private static Configuration_systray config;
+	private Configuration_systray config;
 	
 	private int sleeping = 60000;
 	
