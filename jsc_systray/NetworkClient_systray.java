@@ -26,7 +26,7 @@ public class NetworkClient_systray {
 		{
 			this.run();
 			try {
-				System.out.println("Sover " + (int)(sleeping/1000) + " sek");
+				System.out.println("Sleeping " + (int)(sleeping/1000) + " seconds");
 				Thread.sleep(sleeping);
 			} catch (InterruptedException e ) {
 				
@@ -43,7 +43,7 @@ public class NetworkClient_systray {
 			if(line.equals(new String("give_config")))
 			{
 				// Gir config
-				System.out.println("Sender config.");
+				System.out.println("Sending config.");
 				out.println("config");
 				out.println(config.myMac);
 				out.println(config.myName);
@@ -53,12 +53,12 @@ public class NetworkClient_systray {
 			System.out.println("Text received: " + line);
 			if(line.equals(new String("reboot")))
 			{
-				System.out.println("Skal reboote nå...");
+				System.out.println("I'm going to reboot...");
 				Systemcom.reboot();
 			}
 			else if(line.equals(new String("shutdown")))
 			{
-				System.out.println("Skal slå av nå...");
+				System.out.println("I'm going to shutdown now...");
 				Systemcom.shutdown();
 			}
 		} catch (IOException e){
@@ -89,7 +89,7 @@ public class NetworkClient_systray {
 			} catch  (IOException e) {
 				System.out.println("No I/O. " + e);
 				try {
-					System.out.println("Sover " + (int)(sleeping/1000) + " sek");
+					System.out.println("Sleeping " + (int)(sleeping/1000) + " seconds");
 					Thread.sleep(sleeping);
 				} catch (InterruptedException a) {
 					
