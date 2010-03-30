@@ -1,15 +1,15 @@
 package jsc_server;
 
-public class MenyElement {
+public abstract class MenyElement {
 	
-	private String elementTxt;
+	protected String elementTxt;
 	
-	public MenyElement () {
+	/*public MenyElement ()  {
 	}
 	
 	public MenyElement (String tekst) {
 		this.elementTxt = tekst;
-	}
+	}*/
 	
 	public String toString () {
 		return elementTxt;

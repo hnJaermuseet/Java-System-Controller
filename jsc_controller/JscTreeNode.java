@@ -21,7 +21,7 @@ public class JscTreeNode extends DefaultMutableTreeNode {
 	
 	public JscTreeNode (String tekst) {
 		super ((Object) tekst);
-		this.object = new MenyElement(tekst);
+		this.object = new MenuItem(tekst);
 		type = object.getType();
 	}
 }
