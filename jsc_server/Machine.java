@@ -212,6 +212,10 @@ public class Machine extends MenuItem {
 		return this.name;
 	}
 	
+	public String getMac () {
+		return this.mac;
+	}
+	
 	public long getLastPing () {
 		return this.lastPing;
 	}
