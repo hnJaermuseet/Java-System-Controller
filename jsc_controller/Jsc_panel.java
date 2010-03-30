@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -35,9 +36,8 @@ public class Jsc_panel extends JPanel implements ActionListener {
 	//public static JTextField currentSelectionField;
 	
 	//private Machine[] machines;
-	private Gruppe[] grupper = new Gruppe[4];
-	private int gruppe_num = 0;
-	private int gruppe_num2 = 0;
+	
+	private ArrayList<Gruppe> grupper;;
 
 	/*
 	public Jsc_panel (Machine[] machines) {
@@ -152,13 +152,13 @@ public class Jsc_panel extends JPanel implements ActionListener {
 		}*/
 		
 		// Leser grupper
-		if(gruppe_num > 0)
+		if(grupper.size() > 0)
 		{
 			DefaultMutableTreeNode gruppeX;
-			for (int i = 0; i < gruppe_num; i++) {
-				gruppeX = treePanel.addObject(null, grupper[i]);
-				MenyElement[] content = grupper[i].getContent();
-				for (int j = 0; j < grupper[i].getContentNum(); j++) {
+			for (int i = 0; i < grupper.size(); i++) {
+				gruppeX = treePanel.addObject(null, grupper.get(i));
+				MenyElement[] content = grupper.get(i).getContent();
+				for (int j = 0; j < grupper.get(i).getContentNum(); j++) {
 					//treePanel.addObject (gruppeX, (Machine)content[j]);
 					treePanel.addObject (gruppeX, content[j]);
 				}
@@ -229,7 +229,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 						if(line.startsWith("[") && line.length() > 2)
 						{
 							// Ny gruppe
-							ny_id = gruppe_num;
+							ny_id = grupper.size();
 							this.addGroup(line.substring(1, line.length()-1));
 						}
 						else if (line.startsWith("projectorNEC ") && line.length() > 13) {
@@ -260,25 +260,15 @@ public class Jsc_panel extends JPanel implements ActionListener {
 	}
 	
 	public void addGroup(String gruppe_navn) {
-		if(gruppe_num == grupper.length) {
-			// Increasing
-			Gruppe[] tmp = new Gruppe[grupper.length * 2];
-			for (int i = 0; i < grupper.length; i++) {
-				tmp[i] = grupper[i];
-			}
-			grupper = tmp;
-		}
-		
-		grupper[gruppe_num] = new Gruppe (gruppe_navn);
-		gruppe_num++;
+		grupper.add(new Gruppe(gruppe_navn));
 	}
 
 	public void addGroupContent (int gruppe_num, String innhold_navn) {
 		
-		grupper[gruppe_num].addContent (innhold_navn);
+		grupper.get(gruppe_num).addContent (innhold_navn);
 	}
 	
 	public void addGroupContent (int gruppe_num, MenyElement maskin) {
-		grupper[gruppe_num].addContent (maskin);
+		grupper.get(gruppe_num).addContent (maskin);
 	}
 }
