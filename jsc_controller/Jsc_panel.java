@@ -81,6 +81,8 @@ public class Jsc_panel extends JPanel implements ActionListener {
 	public Jsc_panel (MenyElement[] menyelementer) {
 		super(new BorderLayout());
 		
+		grupper = new ArrayList<Gruppe>();
+		
 		this.getGrupper();
 		for (int i = 0; i < menyelementer.length; i++) {
 			this.addGroupContent(0, menyelementer[i]);
