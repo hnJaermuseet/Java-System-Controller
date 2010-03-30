@@ -2,10 +2,14 @@ package jsc_controller;
 
 import javax.swing.tree.*;
 
-import jsc_server.Machine;
 import jsc_server.MenyElement;
 
 public class JscTreeNode extends DefaultMutableTreeNode {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public MenyElement object;
 	public String type;
 	

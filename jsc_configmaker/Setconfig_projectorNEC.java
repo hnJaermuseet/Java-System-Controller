@@ -10,6 +10,11 @@ import jsc_server.CantFindMachine;
 
 public class Setconfig_projectorNEC extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private JLabel ip2, navn2;
 	
 	private JLabel infotekst, empty;

@@ -7,6 +7,11 @@ import javax.swing.*;
 
 public class Systray_setConfig extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private JLabel srvport2, srvadr2, myMac2, myName2;
 	
 	private JTextField srvport3;

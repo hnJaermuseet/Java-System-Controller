@@ -14,6 +14,11 @@ import wol.configuration.IllegalEthernetAddressException;
 
 public class Startup_panel extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private JLabel startup_txt2;
 	
 	private JTextField startup_txt3;

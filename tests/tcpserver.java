@@ -1,9 +1,6 @@
 package tests;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -22,7 +19,6 @@ public class tcpserver {
 		server.listenSocket();
 	}
 	
-	private final static Logger LOG = Logger.getLogger(tcpserver.class.getName());
 	private ServerSocket server = null;
 	private int srvport;
 	

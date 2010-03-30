@@ -2,8 +2,6 @@ package jsc_configmaker;
 
 import javax.swing.JFrame;
 
-import jsc_systray.Systray_setConfig;
-
 public class runner_configmaker {
 	
 	public static void main(String[] args) {

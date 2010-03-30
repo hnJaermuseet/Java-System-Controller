@@ -1,11 +1,9 @@
 package jsc_server;
 
 import java.net.*;
-import java.util.logging.Logger;
 import java.io.*;
 
 public class JsvServer {
-	private final static Logger LOG = Logger.getLogger(JsvServer.class.getName());
 	private ServerSocket server = null;
 	private int srvport;
 	

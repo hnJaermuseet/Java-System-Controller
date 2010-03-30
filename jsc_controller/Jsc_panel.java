@@ -16,10 +16,14 @@ import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import jsc_server.CantFindMachine;
-import jsc_server.Machine;
 import jsc_server.MenyElement;
 
 public class Jsc_panel extends JPanel implements ActionListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	//private static String ADD_COMMAND = "add";
 	//private static String REMOVE_COMMAND = "remove";
 	//private static String CLEAR_COMMAND = "clear";
