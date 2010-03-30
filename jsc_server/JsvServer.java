@@ -14,7 +14,7 @@ public class JsvServer {
 				"Dette vinduet kjører JSC-serveren i. Ikke\n" + 
 				"lukk det hvis du har planer om å slå av\n" +
 				"eller restarte maskiner.\n");
-		System.out.println ("Bruk JSC-controller for å stryre maskiner og prosjektører.");
+		System.out.println ("Bruk JSC-controller for å styre maskiner og prosjektører.");
 		System.out.println ("-:--:--:--:--:--:--:--:--:--:--:-");
 		System.out.println ("");
 		
