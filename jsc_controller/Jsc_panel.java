@@ -37,7 +37,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 	
 	//private Machine[] machines;
 	
-	private ArrayList<Gruppe> grupper;;
+	private ArrayList<Gruppe> grupper;
 
 	/*
 	public Jsc_panel (Machine[] machines) {
