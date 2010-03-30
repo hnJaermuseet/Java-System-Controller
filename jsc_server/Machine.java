@@ -14,7 +14,7 @@ import wol.WakeUpUtil;
 import wol.configuration.EthernetAddress;
 import wol.configuration.IllegalEthernetAddressException;
 
-public class Machine extends MenyElement {
+public class Machine extends MenuItem {
 	private final static Logger LOG = Logger.getLogger(Machine.class.getName());
 	
 	private String name;

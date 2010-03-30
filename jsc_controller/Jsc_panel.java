@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import jsc_server.CantFindMachine;
-import jsc_server.MenyElement;
+import jsc_server.MenuItem;
 
 public class Jsc_panel extends JPanel implements ActionListener {
 	/**
@@ -78,7 +78,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
         //Add the scroll pane to this panel.
         add(scrollPane);
 	}*/
-	public Jsc_panel (MenyElement[] menyelementer) {
+	public Jsc_panel (MenuItem[] menyelementer) {
 		super(new BorderLayout());
 		
 		grupper = new ArrayList<Gruppe>();
@@ -159,7 +159,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 			DefaultMutableTreeNode gruppeX;
 			for (int i = 0; i < grupper.size(); i++) {
 				gruppeX = treePanel.addObject(null, grupper.get(i));
-				MenyElement[] content = grupper.get(i).getContent();
+				MenuItem[] content = grupper.get(i).getContent();
 				for (int j = 0; j < grupper.get(i).getContentNum(); j++) {
 					//treePanel.addObject (gruppeX, (Machine)content[j]);
 					treePanel.addObject (gruppeX, content[j]);
@@ -270,7 +270,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 		grupper.get(gruppe_num).addContent (innhold_navn);
 	}
 	
-	public void addGroupContent (int gruppe_num, MenyElement maskin) {
+	public void addGroupContent (int gruppe_num, MenuItem maskin) {
 		grupper.get(gruppe_num).addContent (maskin);
 	}
 }

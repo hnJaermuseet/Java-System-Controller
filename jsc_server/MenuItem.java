@@ -1,6 +1,6 @@
 package jsc_server;
 
-public abstract class MenyElement {
+public abstract class MenuItem {
 	
 	protected String elementTxt;
 	

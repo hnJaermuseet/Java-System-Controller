@@ -17,9 +17,9 @@ import java.util.logging.Logger;
 
 import jsc_server.CantFindMachine;
 import jsc_server.Machine;
-import jsc_server.MenyElement;
+import jsc_server.MenuItem;
 
-public class ProjectorNEC extends MenyElement {
+public class ProjectorNEC extends MenuItem {
 	private final static Logger LOG = Logger.getLogger(Machine.class.getName());
 	
 	private String name;

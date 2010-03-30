@@ -2,7 +2,7 @@ package jsc_controller;
 
 import javax.swing.tree.*;
 
-import jsc_server.MenyElement;
+import jsc_server.MenuItem;
 
 public class JscTreeNode extends DefaultMutableTreeNode {
 	/**
@@ -10,10 +10,10 @@ public class JscTreeNode extends DefaultMutableTreeNode {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public MenyElement object;
+	public MenuItem object;
 	public String type;
 	
-	public JscTreeNode (MenyElement object) {
+	public JscTreeNode (MenuItem object) {
 		super((Object)object);
 		type = object.getType();
 		this.object = object;
@@ -21,7 +21,7 @@ public class JscTreeNode extends DefaultMutableTreeNode {
 	
 	public JscTreeNode (String tekst) {
 		super ((Object) tekst);
-		this.object = new MenuItem(tekst);
+		this.object = new BasicMenuItem(tekst);
 		type = object.getType();
 	}
 }

@@ -6,10 +6,10 @@ import javax.swing.JFrame;
 
 import jsc_server.CantFindMachine;
 import jsc_server.Machine;
-import jsc_server.MenyElement;
+import jsc_server.MenuItem;
 
 public class Jsc_controller {
-	private MenyElement[] menyelementer; // Filenames for the machines
+	private MenuItem[] menyelementer; // Filenames for the machines
     
 	public static void main(String[] args) {
 		new Jsc_controller();
@@ -46,7 +46,7 @@ public class Jsc_controller {
 				count++;
 		}
 		
-		menyelementer = new MenyElement[count];
+		menyelementer = new MenuItem[count];
 		int machines = 0;
 		int projector_nec = 0;
 		count = -1;

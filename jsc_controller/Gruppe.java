@@ -2,11 +2,11 @@ package jsc_controller;
 
 import jsc_server.CantFindMachine;
 import jsc_server.Machine;
-import jsc_server.MenyElement;
+import jsc_server.MenuItem;
 
-public class Gruppe extends MenyElement {
+public class Gruppe extends MenuItem {
 	private String gruppe_navn;
-	private MenyElement[] gruppe_innhold = new MenyElement[4];
+	private MenuItem[] gruppe_innhold = new MenuItem[4];
 	private int gruppe_num = 0;
 	
 	public Gruppe (String gruppe_navn) {
@@ -15,7 +15,7 @@ public class Gruppe extends MenyElement {
 	
 	public void addContent (String innhold_navn) {
 		if(this.gruppe_num == this.gruppe_innhold.length) {
-			MenyElement[] tmp = new MenyElement[gruppe_innhold.length * 2];
+			MenuItem[] tmp = new MenuItem[gruppe_innhold.length * 2];
 			for (int i = 0; i < gruppe_innhold.length; i++) {
 				tmp[i] = gruppe_innhold[i];
 			}
@@ -30,9 +30,9 @@ public class Gruppe extends MenyElement {
 		}
 	}
 	
-	public void addContent (MenyElement maskin) {
+	public void addContent (MenuItem maskin) {
 		if(this.gruppe_num == this.gruppe_innhold.length) {
-			MenyElement[] tmp = new MenyElement[gruppe_innhold.length * 2];
+			MenuItem[] tmp = new MenuItem[gruppe_innhold.length * 2];
 			for (int i = 0; i < gruppe_innhold.length; i++) {
 				tmp[i] = gruppe_innhold[i];
 			}
@@ -43,7 +43,7 @@ public class Gruppe extends MenyElement {
 		gruppe_num++;
 	}
 	
-	public MenyElement[] getContent () {
+	public MenuItem[] getContent () {
 		return gruppe_innhold;
 	}
 	

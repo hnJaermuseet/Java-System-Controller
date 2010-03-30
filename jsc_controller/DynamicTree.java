@@ -51,7 +51,7 @@ import javax.swing.tree.*;
 import javax.swing.event.*;
 
 import jsc_server.Machine;
-import jsc_server.MenyElement;
+import jsc_server.MenuItem;
 
 public class DynamicTree extends JPanel implements TreeSelectionListener {
     protected DefaultMutableTreeNode rootNode;
@@ -157,7 +157,7 @@ public class DynamicTree extends JPanel implements TreeSelectionListener {
         return childNode;
     }*/
 
-    public DefaultMutableTreeNode addObject(MenyElement child) {
+    public DefaultMutableTreeNode addObject(MenuItem child) {
         DefaultMutableTreeNode parentNode = null;
         TreePath parentPath = tree.getSelectionPath();
 
@@ -172,12 +172,12 @@ public class DynamicTree extends JPanel implements TreeSelectionListener {
     }
 
     public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent,
-    		MenyElement child) {
+    		MenuItem child) {
         return addObject(parent, child, false);
     }
 
     public DefaultMutableTreeNode addObject(DefaultMutableTreeNode parent,
-    		MenyElement child, 
+    		MenuItem child, 
     		boolean shouldBeVisible) {
 		JscTreeNode childNode = new JscTreeNode(child);
 
