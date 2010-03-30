@@ -224,11 +224,12 @@ public class DynamicTree extends JPanel implements TreeSelectionListener {
     }
     
     public void valueChanged(TreeSelectionEvent event) {
-    	JscTreeNode node;
-    	System.out.println(tree.getLastSelectedPathComponent());
-        node = (JscTreeNode)(tree.getLastSelectedPathComponent());
+    	JscTreeNode node = (JscTreeNode)(tree.getLastSelectedPathComponent());
         if (node != null)
+        {
+        	System.out.println(node.object.whenSelected());
         	currentSelectionField.setText (node.object.whenSelected());
+        }
 	}
     
     public void reloadTree () {
