@@ -3,17 +3,17 @@ package jsc_server;
 import java.net.*;
 import java.io.*;
 
-public class JsvServer {
+public class Jsc_server {
 
 	public static void main(String[] args) {
-		JsvServer server = new JsvServer("2500");
+		Jsc_server server = new Jsc_server("2500");
 		server.listenSocket();
 	}
 	
 	private ServerSocket server = null;
 	private int srvport;	
 	
-	public JsvServer (String srvport) {
+	public Jsc_server (String srvport) {
 		System.out.println ("-:--:--:--:--:--:--:--:--:--:--:-");
 		System.out.println ("JavaSystemControl - Server\n");
 		System.out.println (
