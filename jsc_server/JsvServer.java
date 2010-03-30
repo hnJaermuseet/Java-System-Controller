@@ -4,8 +4,14 @@ import java.net.*;
 import java.io.*;
 
 public class JsvServer {
+
+	public static void main(String[] args) {
+		JsvServer server = new JsvServer("2500");
+		server.listenSocket();
+	}
+	
 	private ServerSocket server = null;
-	private int srvport;
+	private int srvport;	
 	
 	public JsvServer (String srvport) {
 		System.out.println ("-:--:--:--:--:--:--:--:--:--:--:-");

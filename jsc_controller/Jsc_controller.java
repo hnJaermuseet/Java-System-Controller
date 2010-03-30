@@ -11,6 +11,10 @@ import jsc_server.MenyElement;
 public class Jsc_controller {
 	private MenyElement[] menyelementer; // Filenames for the machines
     
+	public static void main(String[] args) {
+		new Jsc_controller();
+	}
+	
 	public Jsc_controller () {
         
 		this.getMenyElementer();

@@ -5,6 +5,11 @@ import java.io.FileNotFoundException;
 import javax.swing.JFrame;
 
 public class Systray {
+
+	public static void main(String[] args) {
+		new Systray();
+	}
+	
 	private static Configuration_systray config;
 	
 	public Systray () {
