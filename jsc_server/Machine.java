@@ -29,6 +29,7 @@ public class Machine extends MenuItem {
 	private File file;
 	
 	public Machine (String mac) throws CantFindMachine {
+		this.mac = macFilter(mac);
 		String mac_file = mac.replace(':', '.');
 		this.file = new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar + "machine_" + mac_file + ".xml");
 		
@@ -50,17 +51,17 @@ public class Machine extends MenuItem {
 		} else {
 			throw new CantFindMachine ("");
 		}
-		
-		this.mac = mac;
 	}
 	
 	public Machine (String mac, String lastIp, String name) throws CantFindMachine {
-		String mac_file = mac.replace(':', '.');
-		this.file = new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar + "machine_" + mac_file + ".xml");
+		this.mac = macFilter(mac);
+		String mac_file = this.mac.replace(':', '.');
+		this.file = new File(System.getProperty("user.home")
+				+ File.separatorChar + "jsc_config" + File.separatorChar
+				+ "machine_" + mac_file + ".xml");
 		
 		if(name != "") {
 			// Ny maskin
-			this.mac = mac;
 			this.name = name;
 			this.lastIp = lastIp;
 			this.updateStatus(1);
@@ -97,7 +98,6 @@ public class Machine extends MenuItem {
 			throw new CantFindMachine ("");
 		}
 		
-		this.mac = mac;
 		this.lastIp = lastIp;
 	}
 	
@@ -226,7 +226,7 @@ public class Machine extends MenuItem {
 		try {
 			this.type = (String) decoder.readObject();
 			this.name = (String) decoder.readObject();
-			this.mac = (String) decoder.readObject();
+			this.mac = macFilter((String) decoder.readObject());
 			this.lastIp = (String) decoder.readObject();
 			this.lastPing = Long.parseLong((String) decoder.readObject());
 			this.status = Integer.parseInt((String) decoder.readObject());
@@ -264,7 +264,6 @@ public class Machine extends MenuItem {
 		try {
 			this.loadConfig();
 			this.updateStatus(7, false);
-			this.mac = this.mac.replace('.', ':');
 			WakeUpUtil.wakeup(new EthernetAddress(this.mac));
 			System.out.println (this.getName() + " (" + this.mac + ") er på vei på.");
 			
@@ -319,5 +318,10 @@ public class Machine extends MenuItem {
 	
 	public String getType () {
 		return "machine";
+	}
+	
+	public static String macFilter (String unfilteredMac)
+	{
+		return unfilteredMac.replace("-", ":").replace(".", ":");
 	}
 }
