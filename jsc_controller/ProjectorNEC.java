@@ -15,45 +15,39 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import projectorCom.ProjectorNecCom;
+
 import jsc_server.CantFindMachine;
 import jsc_server.Machine;
 import jsc_server.MenuItem;
 
 public class ProjectorNEC extends MenuItem {
-	private final static Logger LOG = Logger.getLogger(Machine.class.getName());
 	
 	private String name;
 	private String ip;
 	private long lastPing;
 	private int status;
 	protected String type = "projector-NEC";
-	private boolean power_on_waiting;
 	
 	private long pingSek = 60; // 60 sek
 	
 	private File file;
+	
+	protected ProjectorNecCom prj;
 	
 	public ProjectorNEC (String name, String ip) throws CantFindMachine {
 		try {
 			this.name = name;
 			this.file = new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar + "projector_NEC_" + name + ".xml");
 			
-			if (file.exists()) {
-				try {
-					loadConfig();
-				} catch (FileNotFoundException e) {
-					String errMsg = "Could not load configuration";
-					
-					if (LOG.isLoggable(Level.FINE)) {
-						LOG.log(Level.WARNING, errMsg, e);
-					} else {
-						LOG.warning(errMsg);
-					}
-					throw new CantFindMachine ("");
-					
-				}
-			} else {
+			if (!file.exists()) {
 				throw new CantFindMachine ("");
+			}
+			
+			try {
+				loadConfig();
+			} catch (Exception e) {
+				throw new CantFindMachine (e.getMessage());
 			}
 		} catch (CantFindMachine e) {
 			// Lager ny når den ikke finnes
@@ -61,48 +55,49 @@ public class ProjectorNEC extends MenuItem {
 			try {
 				this.saveConfig();
 			} catch (FileNotFoundException a) {
-				throw new CantFindMachine ("");
+				throw new CantFindMachine ("Could not save configuration.");
 			}
 		}
+		
+		prj = new ProjectorNecCom(ip);
 	}
 	
 	public ProjectorNEC (String name) throws CantFindMachine {
 		this.name = name;
 		this.file = new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar + "projector_NEC_" + name + ".xml");
 		
-		if (file.exists()) {
-			try {
-				loadConfig();
-			} catch (FileNotFoundException e) {
-				String errMsg = "Could not load configuration";
-				
-				if (LOG.isLoggable(Level.FINE)) {
-					LOG.log(Level.WARNING, errMsg, e);
-				} else {
-					LOG.warning(errMsg);
-				}
-				throw new CantFindMachine ("");
-				
-			}
-		} else {
+		if (!file.exists()) {
 			throw new CantFindMachine ("");
 		}
-	}
-	
-	public void loadConfig() throws FileNotFoundException {
-		XMLDecoder decoder = new XMLDecoder(new FileInputStream(file));
 		
-		try {
-			this.type = (String) decoder.readObject();
-			this.name = (String) decoder.readObject();
-			this.ip = (String) decoder.readObject();
-			this.lastPing = Long.parseLong((String) decoder.readObject());
-			this.status = Integer.parseInt((String) decoder.readObject());
-		} catch (Throwable t) {
+		try
+		{
+			loadConfig();
+		}
+		catch (Exception e)
+		{
 			String errMsg = "Could not load configuration";
 			
-			LOG.log(Level.SEVERE, errMsg, t);
+			throw new CantFindMachine (e.getMessage());
+			
 		}
+		
+		prj = new ProjectorNecCom(ip);
+	}
+	
+	public void loadConfig() throws Exception {
+		XMLDecoder decoder;
+		try {
+			decoder = new XMLDecoder(new FileInputStream(file));
+		} catch (FileNotFoundException e) {
+			throw new Exception("Could not load configration: " + file.getAbsolutePath());
+		}
+		
+		this.type = (String) decoder.readObject();
+		this.name = (String) decoder.readObject();
+		this.ip = (String) decoder.readObject();
+		this.lastPing = Long.parseLong((String) decoder.readObject());
+		this.status = Integer.parseInt((String) decoder.readObject());
 		
 		decoder.close();
 	}
@@ -127,91 +122,19 @@ public class ProjectorNEC extends MenuItem {
 		return file;
 	}
 	
-	public void runNECCommand (String cmd) {
-		try {
-			
-			URL url = new URL("http://"+ this.ip + this.makeNECCommand(cmd));
-			//System.out.println("URL: " + url);
-			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-	        String str;
-	        
-	        boolean normalop = false;
-	        boolean on = false;
-	        boolean status = false;
-	        if(cmd.substring(0, 25).equals(new String("/scripts/IsapiExtPj.dll?S")))
-	        	status = true;
-	       
-	        while ((str = in.readLine()) != null) {
-	            // str is one line of text; readLine() strips the newline character(s)
-	        	//System.out.println(str);
-	        	if(status)
-	        	{
-	        		// TODO: Match på textfield5, at dette lagres og vises via whenSelected()
-	        		if(str.equals(new String("top.consoleN.document.stat.textfield5.value='Normal operation';")))
-	        			normalop = true;
-	        		else if (str.equals(new String("top.consoleN.swapimg('power_on', './images/power_on_g.png');")))
-	        			on = true;
-	        	}
-	        }
-	        in.close();
-	        
-	        if(status)
-	        {
-	        	if(normalop == true && on == true)
-	        	{
-	        		// Update status, is online
-	        		this.updateStatus(1);
-	        	}
-	        	else if (on == true && normalop != true)
-	        	{
-	        		// On, but not normal operation
-	        		this.updateStatus(8);
-	        	}
-	        	else
-	        	{
-	        		// Offline
-	        		this.updateStatus(2);
-	        	}
-	        }
-		} catch (FileNotFoundException e) {
-			this.updateStatus(9);
-		} catch (MalformedURLException e) {
-			this.updateStatus(8);
-			System.out.println(e);
-		} catch (IOException e) {
-			System.out.println(e);
-		}
-	}
 	
-	public String makeNECCommand (String cmd) {
-		cmd += getClock();
-		if(power_on_waiting)
-		{
-			return cmd + "+E%00=%01";
-		}
-		return cmd;
-	}
 	
-	public static String getClock() {
-		Calendar now = Calendar.getInstance();
-		
-		return String.valueOf ( 
-			(10000 * now.get(Calendar.HOUR_OF_DAY)) + 
-			(100 * now.get(Calendar.MINUTE)) + 
-			now.get(Calendar.SECOND));
-	}
 	
 	public void wakeup () {
 		try {
 			this.loadConfig();
 			this.updateStatus(7);
 			
-			this.power_on_waiting = true;
-			this.runNECCommand("/scripts/IsapiExtPj.dll?D=%05%02%00%00%00%00");
+			updateStatus(prj.wakeup());
 			
 			this.saveConfig();
 			System.out.println (this.getName() + " starter opp...");
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
 			System.out.println("Finner ikke config. " + e);
 		}
 	}
@@ -221,12 +144,11 @@ public class ProjectorNEC extends MenuItem {
 			this.loadConfig();
 			this.updateStatus(6);
 			
-			this.power_on_waiting = false;
-			this.runNECCommand("/scripts/IsapiExtPj.dll?D=%05%02%01%00%00%00");
+			updateStatus(prj.shutdown());
 			
 			this.saveConfig();
 			System.out.println (this.getName() + " blir slått av innen " + pingSek + " sekund.");
-		} catch (FileNotFoundException e) {
+		} catch (Exception e) {
 			System.out.println("Config for prosjektor ikke funnet. " + e);
 		}
 	}
@@ -254,6 +176,8 @@ public class ProjectorNEC extends MenuItem {
 			case 9: // offline
 				this.status = status;
 				break;
+			case -1: // No update
+				return;
 			default: // Ukjent
 				this.status = 0;
 				break;
@@ -316,8 +240,8 @@ public class ProjectorNEC extends MenuItem {
 	public String whenSelected () {
 		try {
 			this.loadConfig();
-		} catch (FileNotFoundException z) {
-			
+		} catch (Exception z) {
+			System.out.println(z.getMessage());
 		}
 		
 		return "Valgt: " + this.getName() +
@@ -330,7 +254,7 @@ public class ProjectorNEC extends MenuItem {
 	}
 	
 	public void state () {
-		this.runNECCommand("/scripts/IsapiExtPj.dll?S");
+		this.updateStatus(prj.state());
 		try {
 			this.saveConfig();
 		} catch (FileNotFoundException e) {
