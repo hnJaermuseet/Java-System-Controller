@@ -184,6 +184,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 			populateTree(treePanel);
 			treePanel.reloadTree();
 		}
+		repaint();
 	}
 	
 	/*
