@@ -207,7 +207,11 @@ public class Jsc_panel extends JPanel implements ActionListener {
 		// Getting groups
 		File gruppefil = new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar + "groups.conf");
 		
-		if(gruppefil.exists())
+		if(!gruppefil.exists())
+		{
+			System.out.println("Can't find groups.conf. Was trying "+gruppefil.getAbsolutePath());
+		}	
+		else
 		{
 			// Behandle
 			FileInputStream fis = null;
@@ -231,7 +235,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 					{
 						if(line.startsWith("[") && line.length() > 2)
 						{
-							// Ny gruppe
+							// New group
 							ny_id = groups.size();
 							this.addGroup(line.substring(1, line.length()-1));
 						}
@@ -240,7 +244,8 @@ public class Jsc_panel extends JPanel implements ActionListener {
 								ProjectorNEC element = new ProjectorNEC (line.substring(13));
 								this.addGroupContent(ny_id, element);
 							} catch (CantFindMachine e) {
-								
+								System.out.println("Can't find a config file for NEC projector: " + 
+										line.substring(13));
 							}
 						}
 						else {

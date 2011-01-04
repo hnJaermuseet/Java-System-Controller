@@ -26,6 +26,7 @@ public class Group extends MenuItem {
 			gruppe_innhold[gruppe_num] = new Machine(innhold_navn);
 			gruppe_num++;
 		} catch (CantFindMachine e) {
+			System.out.println("Can't find config file for machine: " + innhold_navn);
 			gruppe_innhold[gruppe_num] = null;
 		}
 	}
