@@ -93,7 +93,7 @@ public class ProjectorNecCom {
 	        	}
 	        	else
 	        	{
-	        		// Offline
+	        		// Offline, or wrong web page
 	        		return 2;
 	        	}
 	        }
@@ -104,6 +104,7 @@ public class ProjectorNecCom {
 			return 8;
 		} catch (IOException e) {
 			System.out.println(e);
+			return 8;
 		}
 		
 		return -1; // No update

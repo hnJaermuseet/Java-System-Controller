@@ -2,23 +2,14 @@ package jsc_controller;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import projectorCom.ProjectorNecCom;
 
 import jsc_server.CantFindMachine;
-import jsc_server.Machine;
 import jsc_server.MenuItem;
 
 public class ProjectorNEC extends MenuItem {
@@ -76,8 +67,6 @@ public class ProjectorNEC extends MenuItem {
 		}
 		catch (Exception e)
 		{
-			String errMsg = "Could not load configuration";
-			
 			throw new CantFindMachine (e.getMessage());
 			
 		}
@@ -128,29 +117,38 @@ public class ProjectorNEC extends MenuItem {
 	public void wakeup () {
 		try {
 			this.loadConfig();
-			this.updateStatus(7);
-			
-			updateStatus(prj.wakeup());
-			
-			this.saveConfig();
-			System.out.println (this.getName() + " starter opp...");
 		} catch (Exception e) {
-			System.out.println("Finner ikke config. " + e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		this.updateStatus(7);
+		
+		(new Thread() {
+			public void run () {
+				updateStatus(prj.wakeup());
+			}
+		}).start();
+		
+		System.out.println (this.getName() + " starter opp...");
 	}
 	
 	public void shutdown () {
+		
 		try {
 			this.loadConfig();
-			this.updateStatus(6);
-			
-			updateStatus(prj.shutdown());
-			
-			this.saveConfig();
-			System.out.println (this.getName() + " blir slått av innen " + pingSek + " sekund.");
 		} catch (Exception e) {
-			System.out.println("Config for prosjektor ikke funnet. " + e);
+			e.printStackTrace();
 		}
+		
+		this.updateStatus(6);
+		
+		(new Thread() {
+			public void run () {
+				updateStatus(prj.shutdown());
+			}
+		}).start();
+		
+		System.out.println (this.getName() + " blir slått av innen " + pingSek + " sekund.");
 	}
 	
 	public void reboot () {
@@ -158,7 +156,7 @@ public class ProjectorNEC extends MenuItem {
 		System.out.println(this.getName() + " er prosjektor og restartes ikke...");
 	}
 	
-	public void updateStatus (int status) {
+	public synchronized void updateStatus (int status) {
 		this.updateStatus (status, true);
 	}
 	
@@ -184,6 +182,13 @@ public class ProjectorNEC extends MenuItem {
 		}
 		if(ping)
 			this.newPing();
+		
+		try {
+			this.saveConfig();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public String getStatusText () {
@@ -254,11 +259,10 @@ public class ProjectorNEC extends MenuItem {
 	}
 	
 	public void state () {
-		this.updateStatus(prj.state());
-		try {
-			this.saveConfig();
-		} catch (FileNotFoundException e) {
-			
-		}
+		(new Thread() {
+			public void run () {
+				updateStatus(prj.state());
+			}
+		}).start();
 	}
 }
