@@ -83,7 +83,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 		
 		grupper = new ArrayList<Gruppe>();
 		
-		this.getGrupper();
+		this.getGroups();
 		for (int i = 0; i < menyelementer.length; i++) {
 			this.addGroupContent(0, menyelementer[i]);
 		}
@@ -199,12 +199,12 @@ public class Jsc_panel extends JPanel implements ActionListener {
 		treePanel.reloadTree();
 	}*/
 	
-	public void getGrupper () {
-		// Lager "Alle maskiner"-gruppen
+	public void getGroups () {
+		// Make the group "All machines"
 		this.addGroup("Alle maskiner");
 		
-		// Henter grupper
-		File gruppefil = new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar + "grupper.conf");
+		// Getting groups
+		File gruppefil = new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar + "groups.conf");
 		
 		if(gruppefil.exists())
 		{
