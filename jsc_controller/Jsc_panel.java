@@ -18,6 +18,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import jsc_server.CantFindMachine;
 import jsc_server.MenuItem;
+import translation.*;
 
 public class Jsc_panel extends JPanel implements ActionListener {
 	/**
@@ -201,7 +202,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 	
 	public void getGroups () {
 		// Make the group "All machines"
-		this.addGroup("Alle maskiner");
+		this.addGroup(T.t("All machines"));
 		
 		// Getting groups
 		File gruppefil = new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar + "groups.conf");
