@@ -4,12 +4,12 @@ import jsc_server.CantFindMachine;
 import jsc_server.Machine;
 import jsc_server.MenuItem;
 
-public class Gruppe extends MenuItem {
+public class Group extends MenuItem {
 	private String gruppe_navn;
 	private MenuItem[] gruppe_innhold = new MenuItem[4];
 	private int gruppe_num = 0;
 	
-	public Gruppe (String gruppe_navn) {
+	public Group (String gruppe_navn) {
 		this.gruppe_navn = gruppe_navn;
 	}
 	

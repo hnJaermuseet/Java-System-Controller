@@ -37,7 +37,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 	
 	//private Machine[] machines;
 	
-	private ArrayList<Gruppe> grupper;
+	private ArrayList<Group> groups;
 
 	/*
 	public Jsc_panel (Machine[] machines) {
@@ -81,7 +81,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 	public Jsc_panel (MenuItem[] menyelementer) {
 		super(new BorderLayout());
 		
-		grupper = new ArrayList<Gruppe>();
+		groups = new ArrayList<Group>();
 		
 		this.getGroups();
 		for (int i = 0; i < menyelementer.length; i++) {
@@ -154,13 +154,13 @@ public class Jsc_panel extends JPanel implements ActionListener {
 		}*/
 		
 		// Leser grupper
-		if(grupper.size() > 0)
+		if(groups.size() > 0)
 		{
 			DefaultMutableTreeNode gruppeX;
-			for (int i = 0; i < grupper.size(); i++) {
-				gruppeX = treePanel.addObject(null, grupper.get(i));
-				MenuItem[] content = grupper.get(i).getContent();
-				for (int j = 0; j < grupper.get(i).getContentNum(); j++) {
+			for (int i = 0; i < groups.size(); i++) {
+				gruppeX = treePanel.addObject(null, groups.get(i));
+				MenuItem[] content = groups.get(i).getContent();
+				for (int j = 0; j < groups.get(i).getContentNum(); j++) {
 					//treePanel.addObject (gruppeX, (Machine)content[j]);
 					treePanel.addObject (gruppeX, content[j]);
 				}
@@ -231,7 +231,7 @@ public class Jsc_panel extends JPanel implements ActionListener {
 						if(line.startsWith("[") && line.length() > 2)
 						{
 							// Ny gruppe
-							ny_id = grupper.size();
+							ny_id = groups.size();
 							this.addGroup(line.substring(1, line.length()-1));
 						}
 						else if (line.startsWith("projectorNEC ") && line.length() > 13) {
@@ -262,15 +262,15 @@ public class Jsc_panel extends JPanel implements ActionListener {
 	}
 	
 	public void addGroup(String gruppe_navn) {
-		grupper.add(new Gruppe(gruppe_navn));
+		groups.add(new Group(gruppe_navn));
 	}
 
 	public void addGroupContent (int gruppe_num, String innhold_navn) {
 		
-		grupper.get(gruppe_num).addContent (innhold_navn);
+		groups.get(gruppe_num).addContent (innhold_navn);
 	}
 	
 	public void addGroupContent (int gruppe_num, MenuItem maskin) {
-		grupper.get(gruppe_num).addContent (maskin);
+		groups.get(gruppe_num).addContent (maskin);
 	}
 }
