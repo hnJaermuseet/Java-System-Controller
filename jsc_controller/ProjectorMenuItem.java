@@ -124,7 +124,7 @@ public abstract class ProjectorMenuItem extends MenuItem {
 	public int getStatus () {
 
 		// Get status again if the current status is too old
-		if(((int) (last_ping / 1000L)+pingSek) < ((int) (System.currentTimeMillis() / 1000L)))
+		if(last_state+pingSek < ((int) (System.currentTimeMillis() / 1000L)))
 		{
 			state();
 		}
