@@ -17,7 +17,6 @@ import wol.configuration.IllegalEthernetAddressException;
 public class Machine extends MenuItem {
 	private final static Logger LOG = Logger.getLogger(Machine.class.getName());
 	
-	private String name;
 	private String mac;
 	private String lastIp;
 	private long lastPing;
@@ -154,24 +153,53 @@ public class Machine extends MenuItem {
 		}
 	}
 	
-	public String getStatusText () {
-		switch (this.status)
+	public int getStatus()
+	{
+		switch (status)
 		{
 			case 1: // ping_ok
 				// Sjekker om den enda er online
 				// (+ 20 for å ha margin)
 				if((this.lastPing/1000) >= ((System.currentTimeMillis()/1000) - (this.pingSek + 20)))
-					return "Online";
+					return 1;
 				else
+				{
+					updateStatus(2, false);
+					try {
+						saveConfig();
+					} catch (FileNotFoundException e ) {
+						System.out.println("Unable to save " + getName() + ": " +e);
+					}
+					return 2;
+				}
+			case 6: // shutdown_mottatt
+				if((this.lastPing/1000) <= ((System.currentTimeMillis()/1000) - (this.pingSek + this.pingSek + 20)))
 				{
 					this.updateStatus(2, false);
 					try {
 						this.saveConfig();
 					} catch (FileNotFoundException e ) {
-						
+						System.out.println("Unable to save " + getName() + ": " +e);
 					}
-					return "Offline";
+					return 2;
 				}
+				else
+					return 6;
+			case 2: // ikke_ping
+			case 3: // restart_sendt
+			case 4: // restart_mottatt
+			case 5: // shutdown_sendt
+			case 7: // oppstart_sendt
+			default: // Ukjent
+				return status;
+			}
+	}
+	
+	public String getStatusText () {
+		switch (getStatus())
+		{
+			case 1: // ping_ok
+				return "Online";
 			case 2: // ikke_ping
 				return "Offline";
 			case 3: // restart_sendt
@@ -181,18 +209,7 @@ public class Machine extends MenuItem {
 			case 5: // shutdown_sendt
 				return "Avslutter snart";
 			case 6: // shutdown_mottatt
-				if((this.lastPing/1000) <= ((System.currentTimeMillis()/1000) - (this.pingSek + this.pingSek + 20)))
-				{
-					this.updateStatus(2, false);
-					try {
-						this.saveConfig();
-					} catch (FileNotFoundException e ) {
-						
-					}
-					return "Offline";
-				}
-				else
-					return "Avslutter...";
+				return "Avslutter...";
 			case 7: // oppstart_sendt
 				return "Starter opp...";
 			default: // Ukjent
@@ -206,10 +223,6 @@ public class Machine extends MenuItem {
 	
 	public String getIp () {
 		return this.lastIp;
-	}
-	
-	public String getName () {
-		return this.name;
 	}
 	
 	public String getMac () {
@@ -314,10 +327,6 @@ public class Machine extends MenuItem {
 		return "Valgt: " + this.getName() +
 				", " + this.getIp() +
 				", status: " + this.getStatusText() + ", MAC: " + this.mac;
-	}
-	
-	public String getType () {
-		return "machine";
 	}
 	
 	public static String macFilter (String unfilteredMac)

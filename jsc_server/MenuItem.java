@@ -3,6 +3,8 @@ package jsc_server;
 public abstract class MenuItem {
 	
 	protected String elementTxt;
+	protected String name = "";
+	protected String type = "";
 	
 	/*public MenyElement ()  {
 	}
@@ -10,28 +12,30 @@ public abstract class MenuItem {
 	public MenyElement (String tekst) {
 		this.elementTxt = tekst;
 	}*/
+
+	// Abstract wakeup, shutdown and reboot
+	public abstract void wakeup ();
+	public abstract void shutdown ();
+	public abstract void reboot ();
+	
+	// Abstract methods related to status
+	public abstract String getStatusText();
+	public abstract int getStatus();
 	
 	public String toString () {
 		return elementTxt;
 	}
 	
-	public void wakeup () {
-		System.out.println("Ingen wakeup laget.");
-	}
-	
-	public void shutdown () {
-		System.out.println("Ingen shutdown laget.");
-	}
-	
-	public void reboot () {
-		System.out.println("Ingen reboot laget.");
-	}
 	
 	public String getType() {
-		return "";
+		return type;
 	}
 	
 	public String whenSelected () {
 		return this.toString();
+	}
+	
+	public String getName() {
+		return name;
 	}
 }

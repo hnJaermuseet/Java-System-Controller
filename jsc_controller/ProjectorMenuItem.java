@@ -7,7 +7,6 @@ import projectorCom.ProjectorCom;
 import jsc_server.MenuItem;
 
 public abstract class ProjectorMenuItem extends MenuItem {
-	protected String name;
 	protected String ip;
 	protected long last_ping;
 	protected int status;
@@ -167,10 +166,6 @@ public abstract class ProjectorMenuItem extends MenuItem {
 		return "(" + this.getStatusText() + ") " + this.getName();
 	}
 	
-	public String getName () {
-		 return name;
-	}
-	
 	public String getIp () {
 		return ip;
 	}
@@ -185,10 +180,6 @@ public abstract class ProjectorMenuItem extends MenuItem {
 		return "Valgt: " + this.getName() +
 				", " + this.getIp() +
 				", status: " + this.getStatusText();
-	}
-	
-	public String getType () {
-		return type;
 	}
 
 	private int last_state = 0;

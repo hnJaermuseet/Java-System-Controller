@@ -8,12 +8,14 @@ import jsc_server.MenuItem;
 
 public class Group extends MenuItem {
 	// TODO: Make private again
-	public String gruppe_navn;
+	public String name;
 	protected ArrayList<MenuItem> group_items;
+	
+	protected String type = "gruppe";
 	
 	public Group (String gruppe_navn) {
 		group_items = new ArrayList<MenuItem>();
-		this.gruppe_navn = gruppe_navn;
+		this.name = gruppe_navn;
 	}
 	/*
 	public void addContent (String innhold_navn) {
@@ -43,7 +45,7 @@ public class Group extends MenuItem {
 	}
 
 	public String toString () {
-		return gruppe_navn;
+		return name;
 	}
 	
 	public void wakeup () {
@@ -67,8 +69,16 @@ public class Group extends MenuItem {
 	public String whenSelected () {
 		return "Valgt: gruppen " + this.toString();
 	}
-	
-	public String getType() {
-		return "gruppe";
+
+	@Override
+	public int getStatus() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public String getStatusText() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
