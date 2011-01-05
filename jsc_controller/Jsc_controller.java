@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -87,6 +88,22 @@ public class Jsc_controller extends JPanel {
 		panel.add(rebootButton);
 		add(panel, BorderLayout.SOUTH);
 		
+		// Setting up the updater thread
+		(new Thread() {
+			public void run () {
+				while(true)
+				{
+					updateStatuses();
+					
+					try {
+						Thread.sleep(60000); // Every minute
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+		
 		// Make the window
 		JFrame frame = new JFrame("Java System Control");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -156,6 +173,15 @@ public class Jsc_controller extends JPanel {
 		}
 		System.out.println("Machines found: " + machines);
 		System.out.println("NEC projectors found: " + projector_nec);
+	}
+	
+	public synchronized void updateStatuses ()
+	{
+		for (MenuItem item : menuitems) {
+			item.getStatusText();
+		}
+		
+		tree.updateTree();
 	}
 	
 	public void getGroups () {
@@ -332,6 +358,18 @@ public class Jsc_controller extends JPanel {
 			}
 			
 			return tmp2;
+		}
+		
+		public void updateTree ()
+		{
+			for (Enumeration e = rootNode.breadthFirstEnumeration(); e.hasMoreElements();) {
+				DefaultMutableTreeNode c = (DefaultMutableTreeNode) e.nextElement();
+				
+				treeModel.valueForPathChanged(
+						new TreePath(c.getPath()), 
+						c.getUserObject());
+			}
+			//treeModel.reload();
 		}
 	}
 	
