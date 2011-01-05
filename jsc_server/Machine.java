@@ -37,16 +37,8 @@ public class Machine extends MenuItem {
 		if (file.exists()) {
 			try {
 				loadConfig();
-			} catch (FileNotFoundException e) {
-				String errMsg = "Could not load configuration";
-				
-				if (LOG.isLoggable(Level.FINE)) {
-					LOG.log(Level.WARNING, errMsg, e);
-				} else {
-					LOG.warning(errMsg);
-				}
-				System.out.println("ABBB!!");
-				throw new CantFindMachine ("");
+			} catch (Exception e) {
+				throw new CantFindMachine (e.getMessage());
 				
 			}
 		} else {
@@ -84,15 +76,8 @@ public class Machine extends MenuItem {
 		if (file.exists()) {
 			try {
 				loadConfig();
-			} catch (FileNotFoundException e) {
-				String errMsg = "Could not load configuration";
-				
-				if (LOG.isLoggable(Level.FINE)) {
-					LOG.log(Level.WARNING, errMsg, e);
-				} else {
-					LOG.warning(errMsg);
-				}
-				throw new CantFindMachine ("");
+			} catch (Exception e) {
+				throw new CantFindMachine (e.getMessage());
 				
 			}
 		} else {
@@ -243,8 +228,13 @@ public class Machine extends MenuItem {
 		return this.lastPing;
 	}
 	
-	public void loadConfig() throws FileNotFoundException {
-		XMLDecoder decoder = new XMLDecoder(new FileInputStream(file));
+	public void loadConfig() throws Exception {
+		XMLDecoder decoder;
+		try {
+			decoder = new XMLDecoder(new FileInputStream(file));
+		} catch (FileNotFoundException e) {
+			throw new Exception("Could not load configration: " + file.getAbsolutePath());
+		}
 		
 		try {
 			this.type = (String) decoder.readObject();
@@ -293,12 +283,8 @@ public class Machine extends MenuItem {
 			System.out.println (this.getName() + " (" + this.mac + ") er på vei på.");
 			
 			this.saveConfig();
-		} catch (FileNotFoundException e) {
-			System.out.println("Finner ikke config. " + e);
-		} catch (IOException e) {
-			System.out.println("IOException ... " + e);
-		} catch (IllegalEthernetAddressException e) {
-			System.out.println("Ulovlig mac ... " + e);
+		} catch (Exception e) {
+			System.out.println("Exception - "+getName()+": " + e);
 		} 
 	}
 	
@@ -308,20 +294,20 @@ public class Machine extends MenuItem {
 			this.updateStatus(5, false);
 			this.saveConfig();
 			System.out.println (this.getName() + " blir slått av innen " + pingSek + " sekund.");
-		} catch (FileNotFoundException e) {
-			System.out.println("Config for maskin ikke funnet. " + e);
-		}
+		} catch (Exception e) {
+			System.out.println("Exception - "+getName()+": " + e);
+		} 
 	}
 	
 	public void reboot () {
 		try {
-			this.loadConfig();
-			this.updateStatus(3, false);
-			this.saveConfig();
+			loadConfig();
+			updateStatus(3, false);
+			saveConfig();
 			System.out.println (this.getName() + " blir restartet innen " + pingSek + " sekund.");
-		} catch (FileNotFoundException e) {
-			System.out.println("Config for maskin ikke funnet. " + e);
-		}
+		} catch (Exception e) {
+			System.out.println("Exception - "+getName()+": " + e);
+		} 
 	}
 	
 	public String toString () {
@@ -331,10 +317,10 @@ public class Machine extends MenuItem {
 	
 	public String whenSelected () {
 		try {
-			this.loadConfig();
-		} catch (FileNotFoundException z) {
-			
-		}
+			loadConfig();
+		} catch (Exception e) {
+			System.out.println("Exception - "+getName()+": " + e);
+		} 
 		
 		return "Valgt: " + this.getName() +
 				", " + this.getIp() +
