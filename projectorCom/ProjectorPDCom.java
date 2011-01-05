@@ -1,13 +1,11 @@
 package projectorCom;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Calendar;
 
 import jsc_controller.HTTPAuth;
 
@@ -21,7 +19,7 @@ import jsc_controller.HTTPAuth;
  * 
  * @author Hallvard Nygård <hn@jaermuseet.no>
  */
-public class ProjectorPDCom
+public class ProjectorPDCom implements ProjectorCom
 {
 	protected String ip;
 	protected String username;

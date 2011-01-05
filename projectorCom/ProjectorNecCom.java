@@ -18,7 +18,7 @@ import java.util.Calendar;
  * 
  * @author Hallvard Nygård <hn@jaermuseet.no>
  */
-public class ProjectorNecCom {
+public class ProjectorNecCom implements ProjectorCom {
 	
 	protected boolean power_on_waiting = false;
 	protected String ip;
