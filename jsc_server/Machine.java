@@ -25,6 +25,8 @@ public class Machine extends MenuItem {
 	
 	private long pingSek = 60; // 60 sek
 	
+	private int last_loadconfig = 0;
+	
 	private File file;
 	
 	public Machine (String mac) throws CantFindMachine {
@@ -155,6 +157,14 @@ public class Machine extends MenuItem {
 	
 	public int getStatus()
 	{
+		if(last_loadconfig+pingSek >= (System.currentTimeMillis()/1000))
+		{
+			try {
+				loadConfig();
+			} catch (Exception e) {
+				System.out.println("Exception - "+getName()+": " + e);
+			} 
+		}
 		switch (status)
 		{
 			case 1: // ping_ok
@@ -175,9 +185,9 @@ public class Machine extends MenuItem {
 			case 6: // shutdown_mottatt
 				if((this.lastPing/1000) <= ((System.currentTimeMillis()/1000) - (this.pingSek + this.pingSek + 20)))
 				{
-					this.updateStatus(2, false);
+					updateStatus(2, false);
 					try {
-						this.saveConfig();
+						saveConfig();
 					} catch (FileNotFoundException e ) {
 						System.out.println("Unable to save " + getName() + ": " +e);
 					}
@@ -250,6 +260,8 @@ public class Machine extends MenuItem {
 		}
 		
 		decoder.close();
+		
+		last_loadconfig = (int)(System.currentTimeMillis()/1000);
 	}
 	
 	public void saveConfig() throws FileNotFoundException {
