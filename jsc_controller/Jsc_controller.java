@@ -209,6 +209,15 @@ public class Jsc_controller extends JPanel {
 										line.substring(13));
 							}
 						}
+						else if (line.startsWith("projectorPD ") && line.length() > 12) {
+							try {	
+								ProjectorPD element = new ProjectorPD (line.substring(12));
+								this.addContentLastGroup(element);
+							} catch (CantFindMachine e) {
+								System.out.println("Can't find a config file for PD projector: " + 
+										line.substring(12));
+							}
+						}
 						else {
 							// Finding the machine
 							int index = menuitems.indexOf(line,	type_machine);
