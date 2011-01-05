@@ -1,0 +1,13 @@
+## Java system control (JSC) ##
+
+Program used to turn on and off machines and projectors at Vitenfabrikken, a science center in Sandnes, Norway.
+
+Author: Hallvard Nygård <hn@jaermuseet.no>
+Copyright 2008-2011 Jærmuseet, Vitenfabrikken
+Released under CC-BY-SA lisence.
+
+Tested for startup and shutdown on Windows XP, Windows Vista and Windows 7.
+
+Supported projectors:
+- NEC NP1150
+- Projection Design F30
