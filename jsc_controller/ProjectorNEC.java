@@ -16,11 +16,13 @@ public class ProjectorNEC extends MenuItem {
 	
 	private String name;
 	private String ip;
-	private long lastPing;
+	private long last_ping;
 	private int status;
 	protected String type = "projector-NEC";
 	
 	private long pingSek = 60; // 60 sek
+
+	private int state_request_time = 10; // Only request each 10 second
 	
 	private File file;
 	
@@ -85,7 +87,7 @@ public class ProjectorNEC extends MenuItem {
 		this.type = (String) decoder.readObject();
 		this.name = (String) decoder.readObject();
 		this.ip = (String) decoder.readObject();
-		this.lastPing = Long.parseLong((String) decoder.readObject());
+		this.last_ping = Long.parseLong((String) decoder.readObject());
 		this.status = Integer.parseInt((String) decoder.readObject());
 		
 		decoder.close();
@@ -101,7 +103,7 @@ public class ProjectorNEC extends MenuItem {
 		encoder.writeObject(this.type);
 		encoder.writeObject(this.name);
 		encoder.writeObject(this.ip);
-		encoder.writeObject(Long.toString(this.lastPing));
+		encoder.writeObject(Long.toString(this.last_ping));
 		encoder.writeObject(Integer.toString(this.status));
 		encoder.close();
 		this.file = file;
@@ -186,18 +188,19 @@ public class ProjectorNEC extends MenuItem {
 		try {
 			this.saveConfig();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	public String getStatusText () {
-		//System.out.println(((this.lastPing/1000)+this.pingSek));
-		//System.out.println((System.currentTimeMillis()/1000));
-		if(((this.lastPing/1000)+this.pingSek) < ((System.currentTimeMillis()/1000)))
+
+		// Get status again if the current status is too old
+		if(((int) (last_ping / 1000L)+pingSek) < ((int) (System.currentTimeMillis() / 1000L)))
 		{
-			this.state();
+			state();
 		}
+		else
+			System.out.println("No new");
 		switch (this.status)
 		{
 			case 1: // ping_ok
@@ -226,7 +229,7 @@ public class ProjectorNEC extends MenuItem {
 	}
 
 	public void newPing () {
-		this.lastPing = System.currentTimeMillis();
+		last_ping = System.currentTimeMillis();
 	}
 	
 	public String toString () {
@@ -257,12 +260,22 @@ public class ProjectorNEC extends MenuItem {
 	public String getType () {
 		return "projector-NEC";
 	}
-	
+
+	private int last_state = 0;
 	public void state () {
-		(new Thread() {
-			public void run () {
-				updateStatus(prj.state());
-			}
-		}).start();
+		if(last_state+state_request_time < ((int) (System.currentTimeMillis() / 1000L)))
+		{
+			last_state = ((int) (System.currentTimeMillis() / 1000L));
+			(new Thread() {
+				public void run () {
+					updateStatus(prj.state());
+				}
+			}).start();
+		}
+		else
+		{
+			System.out.println("Not running another state on " + name 
+					+ ". Under 10 sec since last.");
+		}
 	}
 }

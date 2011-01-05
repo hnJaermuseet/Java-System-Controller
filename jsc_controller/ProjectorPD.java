@@ -19,7 +19,7 @@ public class ProjectorPD extends MenuItem {
 	private String username;
 	private String password;
 	
-	private long lastPing;
+	private long last_ping;
 	private int status;
 	protected String type = "projector-PD";
 	
@@ -98,7 +98,7 @@ public class ProjectorPD extends MenuItem {
 		this.ip         = (String) decoder.readObject();
 		this.username   = (String) decoder.readObject();
 		this.password   = (String) decoder.readObject();
-		this.lastPing   = Long.parseLong((String) decoder.readObject());
+		this.last_ping   = Long.parseLong((String) decoder.readObject());
 		this.status     = Integer.parseInt((String) decoder.readObject());
 		
 		decoder.close();
@@ -116,7 +116,7 @@ public class ProjectorPD extends MenuItem {
 		encoder.writeObject(this.ip);
 		encoder.writeObject(this.username);
 		encoder.writeObject(this.password);
-		encoder.writeObject(Long.toString(this.lastPing));
+		encoder.writeObject(Long.toString(this.last_ping));
 		encoder.writeObject(Integer.toString(this.status));
 		encoder.close();
 		this.file = file;
@@ -220,9 +220,11 @@ public class ProjectorPD extends MenuItem {
 	public String getStatusText () {
 		//System.out.println(((this.lastPing/1000)+this.pingSek));
 		//System.out.println((System.currentTimeMillis()/1000));
-		if(((this.lastPing/1000)+this.pingSek) < ((System.currentTimeMillis()/1000)))
+		
+		// Get status again if the current status is too old
+		if((last_ping+pingSek) < ((int) (System.currentTimeMillis() / 1000L)))
 		{
-			this.state();
+			state();
 		}
 		switch (this.status)
 		{
@@ -252,7 +254,7 @@ public class ProjectorPD extends MenuItem {
 	}
 
 	public void newPing () {
-		this.lastPing = System.currentTimeMillis();
+		last_ping = ((int) (System.currentTimeMillis() / 1000L));
 	}
 	
 	public String toString () {
