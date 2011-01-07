@@ -5,6 +5,8 @@ public abstract class MenuItem {
 	protected String elementTxt;
 	protected String name = "";
 	protected String type = "";
+	protected int time_turnon   = 0;
+	protected int time_turnoff  = 3;
 	
 	/*public MenyElement ()  {
 	}
@@ -37,5 +39,13 @@ public abstract class MenuItem {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public int getTurnonTime() {
+		return time_turnon;
+	}
+
+	public int getTurnoffTime() {
+		return time_turnoff;
 	}
 }

@@ -259,4 +259,30 @@ public class Group extends MenuItem {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	public int getTurnonTime()
+	{
+		int max_time = 0;
+		for (MenuItem item : group_items) {
+			if(item.getTurnonTime() > max_time) {
+				max_time = item.getTurnonTime();
+			}
+		}
+		
+		return max_time;
+	}
+	
+	public int getTurnoffTime()
+	{
+		
+		int max_time = 0;
+		for (MenuItem item : group_items) {
+			System.out.println("Max off  " + item.getTurnoffTime());
+			if(item.getTurnoffTime() > max_time) {
+				max_time = item.getTurnoffTime();
+			}
+		}
+		System.out.println("Max off" + max_time);
+		return max_time;
+	}
 }

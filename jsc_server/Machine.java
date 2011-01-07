@@ -6,13 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import wol.WakeUpUtil;
 import wol.configuration.EthernetAddress;
-import wol.configuration.IllegalEthernetAddressException;
 
 public class Machine extends MenuItem {
 	private final static Logger LOG = Logger.getLogger(Machine.class.getName());
@@ -28,6 +26,9 @@ public class Machine extends MenuItem {
 	private int last_loadconfig = 0;
 	
 	private File file;
+
+	protected int time_turnon = 60*3;
+	protected int time_turnoff = 60;
 	
 	public Machine (String mac) throws CantFindMachine {
 		this.mac = macFilter(mac);
@@ -331,4 +332,13 @@ public class Machine extends MenuItem {
 	{
 		return unfilteredMac.replace("-", ":").replace(".", ":");
 	}
+	
+	public int getTurnonTime() { // WTF? Why?
+		return time_turnon;
+	}
+	
+	public int getTurnoffTime() { // WTF? Why?
+		return time_turnoff;
+	}
+	
 }

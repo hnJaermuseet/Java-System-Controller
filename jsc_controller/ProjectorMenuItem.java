@@ -22,6 +22,17 @@ public abstract class ProjectorMenuItem extends MenuItem {
 	
 	protected ProjectorCom prj;
 	
+	protected int time_turnon = 60*2;
+	protected int time_turnoff = 30;
+	
+	public int getTurnonTime() { // WTF? Why?
+		return time_turnon;
+	}
+	
+	public int getTurnoffTime() { // WTF? Why?
+		return time_turnoff;
+	}
+	
 	// Abstact methods
 	public abstract void loadConfig() throws Exception;
 	public abstract void saveConfigAs(File file) throws FileNotFoundException;
