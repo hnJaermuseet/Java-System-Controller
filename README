@@ -6,7 +6,7 @@ Author: Hallvard Nygård <hn@jaermuseet.no>
 Copyright 2008-2011 Jærmuseet, Vitenfabrikken
 Released under CC-BY-SA lisence.
 
-Tested for startup and shutdown on Windows XP, Windows Vista and Windows 7.
+Tested for startup and shutdown on Windows XP, Windows Vista (?) and Windows 7.
 
 Supported projectors:
 - NEC NP1150
@@ -15,3 +15,32 @@ Supported projectors:
 Versions of JSC
 v1.0 - Used from Vitenfabrikkens opening in may 2008 to jan 2011. Turned on and off most of the exhibitions.
 v1.1 - Improved handling of projectors. PD F30 introduced. Better status handling. Also a lot of cleanup of the codebase.
+
+## How it works ##
+- Client software (jsc_systray) runs on all computers we want controll over
+- The client software knows its name, its mac-address and what server to connect to
+- Client machine has has wake on lan (WOL) enabled
+- Client software connects to the server (jsc_server running on another computer)
+- Each time the client connects to server, the server saves status to XML file
+- If the server doesn't know the client, it creates a XML file for it and saves the settings.  
+- JSC_controller is refreshing the files each 60 seconds to update the interface
+- JSC_controller communicates directly with the projectors.
+
+## Group config - groups.conf ##
+
+Example:
+[Groupname]
+00:00:00:00:00:00
+
+[Next group]
+00:00:00:00:00:00
+projectorNEC Projectorname
+projectorPD Projectorname2
+00:00:00:00:00:00
+
+[Group in mainwindow]
+mainwindow
+00:00:00:00:00:00
+00:00:00:00:00:00
+
+etc.
