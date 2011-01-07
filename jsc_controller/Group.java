@@ -2,22 +2,27 @@ package jsc_controller;
 
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+
 import translation.T;
 
-import jsc_server.CantFindMachine;
-import jsc_server.Machine;
 import jsc_server.MenuItem;
 
 public class Group extends MenuItem {
 	// TODO: Make private again
 	public String name;
 	protected ArrayList<MenuItem> group_items;
+	public boolean mainwindow = false;
+	public JLabel mainwindow_label;
 	
 	protected String type = "gruppe";
 	
 	public Group (String gruppe_navn) {
 		group_items = new ArrayList<MenuItem>();
 		this.name = gruppe_navn;
+		
+		mainwindow_label  = new JLabel("");
 	}
 	/*
 	public void addContent (String innhold_navn) {
@@ -110,11 +115,13 @@ public class Group extends MenuItem {
 	}
 
 	@Override
-	public String getStatusText() {
+	public synchronized String getStatusText() {
 		int[] status = getStatusArray();
 		
 		String msg = "";
 		boolean earliermsg = false;
+		int primary_status = 1; // 1 = green, 2 = yellow, 3 = red, 4 = error
+		int primary_status_count = status[1];
 		
 		// Online
 		if(status[1] > 0)
@@ -142,6 +149,11 @@ public class Group extends MenuItem {
 				msg += offline + " " + T.t("is offline");
 				earliermsg = true;
 			}
+			
+			if(offline >= primary_status_count) {
+				primary_status = 3;
+				primary_status_count = offline;
+			}
 		}
 		
 		// Restart
@@ -157,6 +169,11 @@ public class Group extends MenuItem {
 			{
 				msg += restarting + " " + T.t("is restarting");
 				earliermsg = true;
+			}
+			
+			if(restarting > primary_status_count) {
+				primary_status = 2;
+				primary_status_count = restarting;
 			}
 		}
 		
@@ -174,6 +191,11 @@ public class Group extends MenuItem {
 				msg += shutingdown + " " + T.t("is shuting down");
 				earliermsg = true;
 			}
+			
+			if(shutingdown > primary_status_count) {
+				primary_status = 2;
+				primary_status_count = shutingdown;
+			}
 		}
 		
 		// Starting up
@@ -188,6 +210,11 @@ public class Group extends MenuItem {
 			{
 				msg += status[7] + " " + T.t("is starting up");
 				earliermsg = true;
+			}
+			
+			if(status[7] > primary_status_count) {
+				primary_status = 2;
+				primary_status_count = status[7];
 			}
 		}
 		
@@ -204,6 +231,24 @@ public class Group extends MenuItem {
 				msg += status[8] + " " + T.t("has an error");
 				earliermsg = true;
 			}
+			
+			primary_status = 4;
+		}
+		
+		// Update main window
+		if(mainwindow)
+		{
+			mainwindow_label.setText(msg);
+			ImageIcon i;
+			if(primary_status == 1)
+				i = new ImageIcon("images/accept.png");
+			else if(primary_status == 2) // yellow
+				i = new ImageIcon("images/error.png");
+			else if(primary_status == 3) // red
+				i = new ImageIcon("images/stop.png");
+			else // error
+				i = new ImageIcon("images/exclamation.png");
+			mainwindow_label.setIcon(i);
 		}
 		
 		return msg;

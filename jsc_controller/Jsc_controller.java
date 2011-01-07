@@ -2,6 +2,8 @@ package jsc_controller;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +19,7 @@ import java.util.Enumeration;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -30,7 +33,7 @@ import jsc_server.CantFindMachine;
 import jsc_server.Machine;
 import jsc_server.MenuItem;
 
-public class Jsc_controller extends JPanel {
+public class Jsc_controller {
 	
 	/**
 	 * 
@@ -51,42 +54,110 @@ public class Jsc_controller extends JPanel {
 	protected JSCTree             tree; // The tree
 	protected String              namerootnode = "Vitenfabrikken"; // Name of the root node
 	
+	protected int                 statusupdate_rate_seconds = 60;
+	
 	// Types of menuitems
 	public static int type_machine = 1;
 	public static int type_projectorNEC = 2;
+	
+	//
+	private JFrame main_frame;
+	private JFrame group_frame;
 	
 	public Jsc_controller () {
 		getMenuItems();
 		getGroups();
 		
 
+		/************ GROUP WINDOW ************/
+		
 		// Setting up panel
-		setLayout(new BorderLayout(0, 0));
-		setSize(dimension_frame);
+		JPanel group_panel = new JPanel();
+		group_panel.setLayout(new BorderLayout(0, 0));
+		group_panel.setSize(dimension_frame);
 		
 		// Setting up the tree
 		tree = new JSCTree();
 		populateTree(); // Populate tree
-		add(tree, BorderLayout.CENTER);
+		group_panel.add(tree, BorderLayout.CENTER);
 
 		// Buttons
 		JButton wakeupButton = new JButton("Slå på");
 		wakeupButton.setActionCommand(WAKEUP_COMMAND);
-		wakeupButton.addActionListener(new buttonListner());
+		wakeupButton.addActionListener(new buttonListner(group_panel));
 		
 		JButton shutdownButton = new JButton("Slå av");
 		shutdownButton.setActionCommand(SHUTDOWN_COMMAND);
-		shutdownButton.addActionListener(new buttonListner());
+		shutdownButton.addActionListener(new buttonListner(group_panel));
 		
 		JButton rebootButton = new JButton("Restart");
 		rebootButton.setActionCommand(REBOOT_COMMAND);
-		rebootButton.addActionListener(new buttonListner());
+		rebootButton.addActionListener(new buttonListner(group_panel));
 		
 		JPanel panel = new JPanel(new GridLayout(0,3));
 		panel.add(wakeupButton);
 		panel.add(shutdownButton);
 		panel.add(rebootButton);
-		add(panel, BorderLayout.SOUTH);
+		group_panel.add(panel, BorderLayout.SOUTH);
+		
+		
+		/************ MAIN WINDOW ************/
+		
+		JPanel main_panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel main_panel2 = new JPanel(new GridLayout(0,1));
+		main_panel.add(main_panel2);
+		
+		JLabel gp_txt;
+		JPanel gp, gp_buttonsandstatus, gp_buttons, gp_status;
+		JButton gp_turnoff, gp_turnon;
+		for (Group group : groups) {
+			if(group.mainwindow)
+			{
+				gp                   = new JPanel(new GridLayout(3,0));
+				gp_buttonsandstatus  = new JPanel(new FlowLayout(FlowLayout.LEFT));
+				gp_buttons           = new JPanel(new GridLayout(0, 2));
+				gp_txt = new JLabel(group.name);
+				gp_txt.setFont(new Font("Serif", Font.BOLD, 20));
+				gp.add(gp_txt);
+				
+				// Buttons
+				gp_turnon   = new JButton(T.t("Turn on"));
+				gp_turnoff  = new JButton(T.t("Turn off"));
+				
+				gp_turnon   .setSize(100, 20);
+				gp_turnoff  .setSize(100, 20);
+				
+				gp_turnon   .addActionListener(new group_onoff(group, true));
+				gp_turnoff  .addActionListener(new group_onoff(group, false));
+				
+				gp_buttons.add(gp_turnon);
+				gp_buttons.add(gp_turnoff);
+				
+				gp_status = new JPanel();
+				gp_status.add(group.mainwindow_label);
+				
+				gp_buttonsandstatus.add(gp_buttons);
+				gp_buttonsandstatus.add(gp_status);
+				
+				gp.add(gp_buttonsandstatus);
+				main_panel2.add(gp);
+			}
+		}
+		
+		// Show all
+		JPanel showall_panel = new JPanel();
+		JButton showall = new JButton(T.t("Show all groups"));
+		showall.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				group_frame.setVisible(true);
+			}
+			
+		});
+		showall_panel.add(showall);
+		main_panel2.add(showall_panel);
+
 		
 		// Setting up the updater thread
 		(new Thread() {
@@ -96,7 +167,7 @@ public class Jsc_controller extends JPanel {
 					updateStatuses();
 					
 					try {
-						Thread.sleep(60000); // Every minute
+						Thread.sleep(statusupdate_rate_seconds * 1000); // Every minute
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -104,13 +175,30 @@ public class Jsc_controller extends JPanel {
 			}
 		}).start();
 		
+		/**** FRAMES ****/
+		
 		// Make the window
-		JFrame frame = new JFrame("Java System Control");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(this);
-		frame.pack();
-		frame.setSize(500, 500);
-		frame.setVisible(true);
+		group_frame = new JFrame("Java System Control - alle grupper");
+		/*group_frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);*/
+		group_frame.add(group_panel);
+		group_frame.pack();
+		group_frame.setSize(500, 500);
+		group_frame.setLocation(200, 200);
+		/*group_frame.addWindowListener(new WindowAdapter(){
+			public void windowClosing (WindowEvent w)
+			{
+				group_frame.setVisible(false);
+			}
+		});*/
+		
+		// Make the main window
+		main_frame = new JFrame("Java System Control");
+		main_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		main_frame.add(main_panel);
+		main_frame.pack();
+		main_frame.setSize(500, 500);
+		main_frame.setVisible(true);
+		
 		
 	}
 
@@ -120,6 +208,12 @@ public class Jsc_controller extends JPanel {
 	
 	public class buttonListner implements ActionListener
 	{
+		JPanel panel;
+		public buttonListner (JPanel panel)
+		{
+			this.panel = panel;
+		}
+		
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
 
@@ -135,7 +229,7 @@ public class Jsc_controller extends JPanel {
 				}
 			}
 			
-			repaint();
+			panel.repaint();
 		}
 	}
 
@@ -178,6 +272,9 @@ public class Jsc_controller extends JPanel {
 	
 	public synchronized void updateStatuses ()
 	{
+		for (Group item : groups) {
+			item.getStatusText();
+		}
 		for (MenuItem item : menuitems) {
 			item.getStatusText();
 		}
@@ -226,6 +323,10 @@ public class Jsc_controller extends JPanel {
 						{
 							// New group
 							this.addGroup(line.substring(1, line.length()-1));
+						}
+						else if (line.equals("mainwindow"))
+						{
+							lastGroupSetMainwindow(true);
 						}
 						else if (line.startsWith("projectorNEC ") && line.length() > 13) {
 							try {
@@ -388,6 +489,11 @@ public class Jsc_controller extends JPanel {
 		groups.get(gruppe_num).addContent (maskin);
 	}
 	
+	public void lastGroupSetMainwindow(boolean value)
+	{
+		groups.get(groups.size()-1).mainwindow = value;
+	}
+	
 	public class ItemList<E> extends ArrayList<E>
 	{
 
@@ -425,5 +531,30 @@ public class Jsc_controller extends JPanel {
 			}
 			return -1;
 		}
+	}
+	
+	class group_onoff implements ActionListener
+	{
+		Group    group;
+		boolean  on;
+		public group_onoff (Group group, boolean on)
+		{
+			this.group  = group;
+			this.on     = on;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(on)
+			{
+				group.wakeup();
+			}
+			else
+			{
+				group.shutdown();
+			}
+			group.getStatusText(); // Updates the status text
+		}
+		
 	}
 }

@@ -30,6 +30,12 @@ public class Translator {
 			return "Alle har en feil";
 		else if(english.equals("has an error"))
 			return "har en feil";
+		else if(english.equals("Turn off"))
+			return "Slå av";
+		else if(english.equals("Turn on"))
+			return "Slå på";
+		else if(english.equals("Show all groups"))
+			return "Vis alle grupper";
 		
 		System.out.println("Unknown translation for \""+english+"\"");
 		return english;
