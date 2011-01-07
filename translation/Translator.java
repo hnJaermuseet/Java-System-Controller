@@ -36,6 +36,12 @@ public class Translator {
 			return "Slå på";
 		else if(english.equals("Show all groups"))
 			return "Vis alle grupper";
+		else if(english.equals("is on in"))
+			return "er på om";
+		else if(english.equals("is off in"))
+			return "er av om";
+		else if(english.equals("seconds"))
+			return "sekunder";
 		
 		System.out.println("Unknown translation for \""+english+"\"");
 		return english;
