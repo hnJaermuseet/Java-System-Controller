@@ -3,6 +3,7 @@ package jsc_controller;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Point;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -13,15 +14,19 @@ import translation.T;
 
 public class CountDownWindow {
 	
+	int move_x = 200;
+	int move_y = 200;
+	
 	public static void main(String[] args) {
 		// Used to test:
-		new CountDownWindow("Test group", true, 50);
+		new CountDownWindow("Test group", true, 50, new Point(0,0));
 	}
 	
 	public CountDownWindow (
 			final String group_name, 
 			final boolean turningon, 
-			final int seconds)
+			final int seconds,
+			final Point location_mainframe)
 	{
 		(new Thread() {
 			public void run () {
@@ -54,6 +59,9 @@ public class CountDownWindow {
 				
 				JFrame main_frame = new JFrame("");
 				main_frame.add(c);
+				main_frame.setLocation(
+						location_mainframe.x+move_x, 
+						location_mainframe.y+move_y);
 				main_frame.pack();
 				main_frame.setVisible(true);
 				

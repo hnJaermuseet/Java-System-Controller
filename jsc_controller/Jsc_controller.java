@@ -548,12 +548,12 @@ public class Jsc_controller {
 			if(on)
 			{
 				group.wakeup();
-				new CountDownWindow(group.name, on, group.getTurnonTime());
+				new CountDownWindow(group.name, on, group.getTurnonTime(), main_frame.getLocation());
 			}
 			else
 			{
 				group.shutdown();
-				new CountDownWindow(group.name, on, group.getTurnoffTime());
+				new CountDownWindow(group.name, on, group.getTurnoffTime(), main_frame.getLocation());
 			}
 			group.getStatusText(); // Updates the status text
 		}
