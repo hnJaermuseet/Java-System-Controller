@@ -10,7 +10,7 @@ import java.net.URL;
 import jsc_controller.HTTPAuth;
 
 /**
- * Communication with NEC projector
+ * Communication with Projection Design projector
  * 
  * Supports Projection Design F30 (tested on part no 101-1405-08)
  * Uses the projectors web interface over network to turn on/off and get status
