@@ -15,6 +15,7 @@ Supported projectors:
 Versions of JSC
 v1.0 - Used from Vitenfabrikkens opening in may 2008 to jan 2011. Turned on and off most of the exhibitions.
 v1.1 - Improved handling of projectors. PD F30 introduced. Better status handling. Also a lot of cleanup of the codebase.
+v1.2 - New main interface. Includes only button for turning on/off some selected groups and status for those groups.
 
 ## How it works ##
 - Client software (jsc_systray) runs on all computers we want controll over
