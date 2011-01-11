@@ -272,8 +272,8 @@ public class Jsc_controller {
 	
 	public synchronized void updateStatuses ()
 	{
-		for (Group item : groups) {
-			item.getStatusText();
+		for (Group item2 : groups) {
+			item2.getStatusText();
 		}
 		for (MenuItem item : menuitems) {
 			item.getStatusText();

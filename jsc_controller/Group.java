@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 import translation.T;
 
@@ -13,8 +14,10 @@ public class Group extends MenuItem {
 	// TODO: Make private again
 	public String name;
 	protected ArrayList<MenuItem> group_items;
-	public boolean mainwindow = false;
-	public JLabel mainwindow_label;
+	public boolean    mainwindow = false;
+	public JLabel     mainwindow_label;
+	public String     mainwindow_label_txt;
+	public ImageIcon  mainwindow_imageicon;
 	
 	protected String type = "gruppe";
 	
@@ -238,17 +241,17 @@ public class Group extends MenuItem {
 		// Update main window
 		if(mainwindow)
 		{
-			mainwindow_label.setText(msg);
-			ImageIcon i;
+			mainwindow_label_txt = msg;
 			if(primary_status == 1)
-				i = new ImageIcon("images/accept.png");
+				mainwindow_imageicon = new ImageIcon("images/accept.png");
 			else if(primary_status == 2) // yellow
-				i = new ImageIcon("images/error.png");
+				mainwindow_imageicon = new ImageIcon("images/error.png");
 			else if(primary_status == 3) // red
-				i = new ImageIcon("images/stop.png");
+				mainwindow_imageicon = new ImageIcon("images/stop.png");
 			else // error
-				i = new ImageIcon("images/exclamation.png");
-			mainwindow_label.setIcon(i);
+				mainwindow_imageicon = new ImageIcon("images/exclamation.png");
+			
+			SwingUtilities.invokeLater(new GroupStatusChanger());
 		}
 		
 		return msg;
@@ -277,12 +280,18 @@ public class Group extends MenuItem {
 		
 		int max_time = 0;
 		for (MenuItem item : group_items) {
-			System.out.println("Max off  " + item.getTurnoffTime());
 			if(item.getTurnoffTime() > max_time) {
 				max_time = item.getTurnoffTime();
 			}
 		}
-		System.out.println("Max off" + max_time);
 		return max_time;
+	}
+	
+	public class GroupStatusChanger implements Runnable
+	{
+		public void run() {
+			mainwindow_label.setText(mainwindow_label_txt);
+			mainwindow_label.setIcon(mainwindow_imageicon);
+		}
 	}
 }
