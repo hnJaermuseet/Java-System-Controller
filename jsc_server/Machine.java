@@ -9,6 +9,8 @@ import java.io.FileOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jsc_controller.Log;
+
 import wol.WakeUpUtil;
 import wol.configuration.EthernetAddress;
 
@@ -157,9 +159,14 @@ public class Machine extends MenuItem {
 				// Sjekker om den enda er online
 				// (+ 20 for å ha margin)
 				if((this.lastPing/1000) >= ((System.currentTimeMillis()/1000) - (this.pingSek + 20)))
+				{
+					Log.saveLog(this.name, "Is online.");
 					return 1;
+				}
 				else
 				{
+					Log.saveLog(this.name, "No ping. Saving as offline.");
+					
 					updateStatus(2, false);
 					try {
 						saveConfig();
@@ -171,6 +178,8 @@ public class Machine extends MenuItem {
 			case 6: // shutdown_mottatt
 				if((this.lastPing/1000) <= ((System.currentTimeMillis()/1000) - (this.pingSek + this.pingSek + 20)))
 				{
+					Log.saveLog(this.name, "Has shutdown. No ping.");
+					
 					updateStatus(2, false);
 					try {
 						saveConfig();
@@ -180,7 +189,10 @@ public class Machine extends MenuItem {
 					return 2;
 				}
 				else
+				{
+					Log.saveLog(this.name, "Shutdown is sent.");
 					return 6;
+				}
 			case 2: // ikke_ping
 			case 3: // restart_sendt
 			case 4: // restart_mottatt
@@ -244,6 +256,9 @@ public class Machine extends MenuItem {
 			this.lastIp = (String) decoder.readObject();
 			this.lastPing = Long.parseLong((String) decoder.readObject());
 			this.status = Integer.parseInt((String) decoder.readObject());
+			
+
+			Log.saveLog(this.name, "Status from file: " + this.status);
 		} catch (Throwable t) {
 			String errMsg = "Could not load configuration";
 			

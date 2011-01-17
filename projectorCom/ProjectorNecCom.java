@@ -8,6 +8,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 
+import jsc_controller.Log;
+
 /**
  * Communication with NEC projector
  * 
@@ -56,6 +58,8 @@ public class ProjectorNecCom implements ProjectorCom {
 			
 			URL url = new URL("http://"+ ip + makeNECCommand(cmd, power_on_waiting));
 			System.out.println("URL: " + url);
+			Log.saveLog("projectorNecCom", ip + ": URL: " + url);
+			
 			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 	        String str;
 	        
@@ -75,6 +79,12 @@ public class ProjectorNecCom implements ProjectorCom {
 	        			normalop = true;
 	        		else if (str.equals(new String("top.consoleN.swapimg('power_on', './images/power_on_g.png');")))
 	        			on = true;
+	        		else if (str.startsWith("top.consoleN.document.stat.textfield5.value='"))
+	        		{
+	        			// Not normal operation
+		    			Log.saveLog("projectorNecCom", ip + ": Error or something: " + 
+	    						str.substring("top.consoleN.document.stat.textfield5.value='".length()));
+	        		}
 	        	}
 	        }
 	        in.close();
@@ -84,25 +94,31 @@ public class ProjectorNecCom implements ProjectorCom {
 	        	if(normalop == true && on == true)
 	        	{
 	        		// Update status, is online
+	    			Log.saveLog("projectorNecCom", ip + ": Update status, is online");
 	        		return 1;
 	        	}
 	        	else if (on == true && normalop != true)
 	        	{
 	        		// On, but not normal operation
+	    			Log.saveLog("projectorNecCom", ip + ": On, but not normal operation");
 	        		return 8;
 	        	}
 	        	else
 	        	{
 	        		// Offline, or wrong web page
+	    			Log.saveLog("projectorNecCom", ip + ": Offline, or wrong web page");
 	        		return 2;
 	        	}
 	        }
 		} catch (FileNotFoundException e) {
+			Log.saveLog("projectorNecCom", ip + ": FileNotFoundException: " + e);
 			return 9;
 		} catch (MalformedURLException e) {
+			Log.saveLog("projectorNecCom", ip + ": MalformedURLException: " + e);
 			System.out.println(e);
 			return 8;
 		} catch (IOException e) {
+			Log.saveLog("projectorNecCom", ip + ": IOException: " + e);
 			System.out.println(e);
 			return 8;
 		}

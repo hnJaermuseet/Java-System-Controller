@@ -127,6 +127,9 @@ public abstract class ProjectorMenuItem extends MenuItem {
 		
 		try {
 			this.saveConfig();
+			
+			// Save log
+			Log.saveLog(this.name, "Status update: "+status);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

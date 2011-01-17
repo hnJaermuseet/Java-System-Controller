@@ -3,6 +3,8 @@ package jsc_server;
 import java.net.*;
 import java.io.*;
 
+import jsc_controller.Log;
+
 public class Jsc_server {
 
 	public static void main(String[] args) {
@@ -126,6 +128,7 @@ class ClientWorker implements Runnable {
 					nextConfig1 = false;
 					nextConfig2 = true;
 					System.out.println("MAC address received: " + mac);
+					Log.saveLog("server", "New machines MAC: " + mac);
 				}
 				else if (nextConfig2)
 				{
@@ -133,12 +136,14 @@ class ClientWorker implements Runnable {
 					
 					String name = in.readLine();
 					System.out.println("Name received: " + name);
+					Log.saveLog("server", "New machine: " + name);
 					try {
 						mac = mac.replace('.', ':');
 						Machine machine = new Machine(mac, client.getInetAddress().toString(), name);
 						String a = machine.getCommand();
 						out.println(a);
 						System.out.println("Respons etter ny: " + a);
+						Log.saveLog("server", "Sending command to "+machine.name+": " + a);
 						machine.saveConfig();
 					} catch (CantFindMachine e) {
 						out.println("server_error");
@@ -168,11 +173,15 @@ class ClientWorker implements Runnable {
 							String a = machine.getCommand();
 							out.println(a);
 							System.out.println("Responding with: " + a);
+							Log.saveLog("server", "Responding to "+machine.name+" with: "+a);
 							machine.saveConfig();
 						} catch (CantFindMachine e) {
-							System.out.println("Talking to " + client.getInetAddress().getHostAddress() + ", en uidentifisert maskin");
+							System.out.println("Talking to " + client.getInetAddress().getHostAddress() + ", an unidentified machine");
+							Log.saveLog("", "Talking to " + client.getInetAddress().getHostAddress() + ", an unidentified machine");
+							
 							System.out.println("Responding with: give_config");
 							out.println("give_config");
+							Log.saveLog("server", "Sending give_config to " + client.getInetAddress().getHostAddress());
 						}
 					}
 				}

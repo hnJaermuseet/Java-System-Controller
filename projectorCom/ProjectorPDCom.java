@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import jsc_controller.HTTPAuth;
+import jsc_controller.Log;
 
 /**
  * Communication with Projection Design projector
@@ -75,6 +76,7 @@ public class ProjectorPDCom implements ProjectorCom
 			
 			URL url = new URL("http://"+ ip + "/" + relurl);
 			System.out.println("URL: " + url);
+			Log.saveLog("projectorPDCom", ip + ": URL: " + url);
 		
 			BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 	        String str;
@@ -102,15 +104,23 @@ public class ProjectorPDCom implements ProjectorCom
 	        if(status)
 	        {
 	        	if(is_off) // Is off
+	        	{
+	    			Log.saveLog("projectorPDCom", ip + ": Is off.");
 	        		return 2;
+	        	}
 	        	if(is_on) // Is on
+	        	{
+	    			Log.saveLog("projectorPDCom", ip + ": Is on.");
 	        		return 1;
+	        	}
 	        }
 		} catch (MalformedURLException e) {
 			System.out.println(e);
+			Log.saveLog("projectorPDCom", ip + ": MalformedURLException: " + e);
 			return 8;
 		} catch (IOException e) {
 			System.out.println(e);
+			Log.saveLog("projectorPDCom", ip + ": IOException: " + e);
 			return 8;
 		}
 		
