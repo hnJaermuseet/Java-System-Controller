@@ -44,4 +44,10 @@ mainwindow
 00:00:00:00:00:00
 00:00:00:00:00:00
 
+[Group without shutdown and wakeup]
+shutdown_msg This group can not be shut down
+shutdown_disabled
+wakeup_msg No wakeup
+wakeup_disabled
+
 etc.

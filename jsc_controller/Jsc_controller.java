@@ -20,6 +20,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -324,10 +325,38 @@ public class Jsc_controller {
 							// New group
 							this.addGroup(line.substring(1, line.length()-1));
 						}
+						
+						/* Group settings */
 						else if (line.equals("mainwindow"))
 						{
-							lastGroupSetMainwindow(true);
+							lastGroup().mainwindow = true;
 						}
+						else if (line.equals("shutdown_enabled"))
+						{
+							lastGroup().shutdown_enabled = true;
+						}
+						else if (line.equals("shutdown_disabled"))
+						{
+							lastGroup().shutdown_enabled = false;
+						}
+						else if (line.equals("wakeup_enabled"))
+						{
+							lastGroup().wakeup_enabled = true;
+						}
+						else if (line.equals("wakeup_disabled"))
+						{
+							lastGroup().wakeup_enabled = false;
+						}
+						else if (line.startsWith("wakeup_msg "))
+						{
+							lastGroup().wakeup_msg = line.substring("wakeup_msg ".length());
+						}
+						else if (line.startsWith("shutdown_msg "))
+						{
+							lastGroup().shutdown_msg = line.substring("shutdown_msg ".length());
+						}
+						
+						/* Group content */
 						else if (line.startsWith("projectorNEC ") && line.length() > 13) {
 							try {
 								ProjectorNEC element = new ProjectorNEC (line.substring(13));
@@ -489,9 +518,9 @@ public class Jsc_controller {
 		groups.get(gruppe_num).addContent (maskin);
 	}
 	
-	public void lastGroupSetMainwindow(boolean value)
+	public Group lastGroup ()
 	{
-		groups.get(groups.size()-1).mainwindow = value;
+		return groups.get(groups.size()-1);
 	}
 	
 	public class ItemList<E> extends ArrayList<E>
@@ -547,13 +576,31 @@ public class Jsc_controller {
 		public void actionPerformed(ActionEvent e) {
 			if(on)
 			{
-				group.wakeup();
-				new CountDownWindow(group.name, on, group.getTurnonTime(), main_frame.getLocation());
+				// Message window
+				if(!group.wakeup_msg.equals(""))
+				{
+					JOptionPane.showMessageDialog(null, group.wakeup_msg);
+				}
+				
+				if(group.wakeup_enabled)
+				{
+					group.wakeup();
+					new CountDownWindow(group.name, on, group.getTurnonTime(), main_frame.getLocation());
+				}
 			}
 			else
 			{
-				group.shutdown();
-				new CountDownWindow(group.name, on, group.getTurnoffTime(), main_frame.getLocation());
+				// Message window
+				if(!group.shutdown_msg.equals(""))
+				{
+					JOptionPane.showMessageDialog(null, group.shutdown_msg);
+				}
+				
+				if(group.shutdown_enabled)
+				{
+					group.shutdown();
+					new CountDownWindow(group.name, on, group.getTurnoffTime(), main_frame.getLocation());
+				}
 			}
 			group.getStatusText(); // Updates the status text
 		}

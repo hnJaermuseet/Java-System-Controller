@@ -19,6 +19,11 @@ public class Group extends MenuItem {
 	public String     mainwindow_label_txt;
 	public ImageIcon  mainwindow_imageicon;
 	
+	public String     shutdown_msg      = "";
+	public boolean    shutdown_enabled  = true;
+	public String     wakeup_msg        = "";
+	public boolean    wakeup_enabled    = false;
+	
 	protected String type = "gruppe";
 	
 	public Group (String gruppe_navn) {
