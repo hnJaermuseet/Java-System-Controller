@@ -66,6 +66,7 @@ public class ProjectorNecCom implements ProjectorCom {
 	        boolean normalop = false;
 	        boolean on = false;
 	        boolean status = false;
+	        boolean nostatus = false;
 	        if(cmd.substring(0, 25).equals(new String("/scripts/IsapiExtPj.dll?S")))
 	        	status = true;
 	       
@@ -79,6 +80,8 @@ public class ProjectorNecCom implements ProjectorCom {
 	        			normalop = true;
 	        		else if (str.equals(new String("top.consoleN.swapimg('power_on', './images/power_on_g.png');")))
 	        			on = true;
+	        		else if(str.equals(new String("top.consoleN.document.stat.textfield5.value='';")))
+	        			nostatus = true;
 	        		else if (str.startsWith("top.consoleN.document.stat.textfield5.value='"))
 	        		{
 	        			// Not normal operation
@@ -91,25 +94,31 @@ public class ProjectorNecCom implements ProjectorCom {
 	        
 	        if(status)
 	        {
-	        	if(normalop == true && on == true)
+				if(on && normalop)
+				{
+					// Update status, is online
+					Log.saveLog("projectorNecCom", ip + ": Update status, is online");
+					return 1;
+				}
+	        	else if (on && nostatus)
 	        	{
-	        		// Update status, is online
-	    			Log.saveLog("projectorNecCom", ip + ": Update status, is online");
-	        		return 1;
+					// On, but no status given
+					Log.saveLog("projectorNecCom", ip + ": On, but no status given");
+					return -1;
 	        	}
-	        	else if (on == true && normalop != true)
-	        	{
-	        		// On, but not normal operation
-	    			Log.saveLog("projectorNecCom", ip + ": On, but not normal operation");
-	        		return 8;
-	        	}
-	        	else
-	        	{
-	        		// Offline, or wrong web page
-	    			Log.saveLog("projectorNecCom", ip + ": Offline, or wrong web page");
-	        		return 2;
-	        	}
-	        }
+				else if (on && !normalop)
+				{
+					// On, but not normal operation
+					Log.saveLog("projectorNecCom", ip + ": On, but not normal operation");
+					return 8;
+				}
+				else
+				{
+					// Offline, or wrong web page
+					Log.saveLog("projectorNecCom", ip + ": Offline, or wrong web page");
+					return 2;
+				}
+			}
 		} catch (FileNotFoundException e) {
 			Log.saveLog("projectorNecCom", ip + ": FileNotFoundException: " + e);
 			return 9;
