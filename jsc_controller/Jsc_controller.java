@@ -237,8 +237,20 @@ public class Jsc_controller {
 	public void getMenuItems () {
 		// Getting from the directories
 		File dir = new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar);
+
+		if (!dir.exists())
+		{
+			boolean FileCreated = (new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar)).mkdir();
+
+			if (FileCreated) {
+				System.out.println("Config folder created");
+			}
+			else {
+				System.out.println("Could not create config folder - Exiting");
+			}
+		}
 		String[] dirlist = dir.list();
-		
+
 		menuitems = new ItemList<MenuItem>();
 		int machines = 0;
 		int projector_nec = 0;
