@@ -7,14 +7,15 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.awt.Desktop;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -35,7 +36,7 @@ import jsc_server.Machine;
 import jsc_server.MenuItem;
 
 public class Jsc_controller {
-	
+
 	/**
 	 * 
 	 */
@@ -44,39 +45,39 @@ public class Jsc_controller {
 	public static void main(String[] args) {
 		new Jsc_controller();
 	}
-	
+
 	// Sizes
 	protected Dimension           dimension_tree = new Dimension(350,400);
 	protected Dimension           dimension_frame = dimension_tree;
-	
+
 	// 
 	protected ItemList<MenuItem>  menuitems; // All menuitems (machines, projectors, etc)
 	protected ArrayList<Group>    groups; // Groups
 	protected JSCTree             tree; // The tree
 	protected String              namerootnode = "Vitenfabrikken"; // Name of the root node
-	
+
 	protected int                 statusupdate_rate_seconds = 60;
-	
+
 	// Types of menuitems
 	public static int type_machine = 1;
 	public static int type_projectorNEC = 2;
-	
+
 	//
 	private JFrame main_frame;
 	private JFrame group_frame;
-	
+
 	public Jsc_controller () {
 		getMenuItems();
 		getGroups();
-		
+
 
 		/************ GROUP WINDOW ************/
-		
+
 		// Setting up panel
 		JPanel group_panel = new JPanel();
 		group_panel.setLayout(new BorderLayout(0, 0));
 		group_panel.setSize(dimension_frame);
-		
+
 		// Setting up the tree
 		tree = new JSCTree();
 		populateTree(); // Populate tree
@@ -86,28 +87,28 @@ public class Jsc_controller {
 		JButton wakeupButton = new JButton("Slå på");
 		wakeupButton.setActionCommand(WAKEUP_COMMAND);
 		wakeupButton.addActionListener(new buttonListner(group_panel));
-		
+
 		JButton shutdownButton = new JButton("Slå av");
 		shutdownButton.setActionCommand(SHUTDOWN_COMMAND);
 		shutdownButton.addActionListener(new buttonListner(group_panel));
-		
+
 		JButton rebootButton = new JButton("Restart");
 		rebootButton.setActionCommand(REBOOT_COMMAND);
 		rebootButton.addActionListener(new buttonListner(group_panel));
-		
+
 		JPanel panel = new JPanel(new GridLayout(0,3));
 		panel.add(wakeupButton);
 		panel.add(shutdownButton);
 		panel.add(rebootButton);
 		group_panel.add(panel, BorderLayout.SOUTH);
-		
-		
+
+
 		/************ MAIN WINDOW ************/
-		
+
 		JPanel main_panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JPanel main_panel2 = new JPanel(new GridLayout(0,1));
 		main_panel.add(main_panel2);
-		
+
 		JLabel gp_txt;
 		JPanel gp, gp_buttonsandstatus, gp_buttons, gp_status;
 		JButton gp_turnoff, gp_turnon;
@@ -120,31 +121,31 @@ public class Jsc_controller {
 				gp_txt = new JLabel(group.name);
 				gp_txt.setFont(new Font("Serif", Font.BOLD, 20));
 				gp.add(gp_txt);
-				
+
 				// Buttons
 				gp_turnon   = new JButton(T.t("Turn on"));
 				gp_turnoff  = new JButton(T.t("Turn off"));
-				
+
 				gp_turnon   .setSize(100, 20);
 				gp_turnoff  .setSize(100, 20);
-				
+
 				gp_turnon   .addActionListener(new group_onoff(group, true));
 				gp_turnoff  .addActionListener(new group_onoff(group, false));
-				
+
 				gp_buttons.add(gp_turnon);
 				gp_buttons.add(gp_turnoff);
-				
+
 				gp_status = new JPanel();
 				gp_status.add(group.mainwindow_label);
-				
+
 				gp_buttonsandstatus.add(gp_buttons);
 				gp_buttonsandstatus.add(gp_status);
-				
+
 				gp.add(gp_buttonsandstatus);
 				main_panel2.add(gp);
 			}
 		}
-		
+
 		// Show all
 		JPanel showall_panel = new JPanel();
 		JButton showall = new JButton(T.t("Show all groups"));
@@ -154,19 +155,19 @@ public class Jsc_controller {
 			public void actionPerformed(ActionEvent e) {
 				group_frame.setVisible(true);
 			}
-			
+
 		});
 		showall_panel.add(showall);
 		main_panel2.add(showall_panel);
 
-		
+
 		// Setting up the updater thread
 		(new Thread() {
 			public void run () {
 				while(true)
 				{
 					updateStatuses();
-					
+
 					try {
 						Thread.sleep(statusupdate_rate_seconds * 1000); // Every minute
 					} catch (InterruptedException e) {
@@ -175,9 +176,9 @@ public class Jsc_controller {
 				}
 			}
 		}).start();
-		
+
 		/**** FRAMES ****/
-		
+
 		// Make the window
 		group_frame = new JFrame("Java System Control - alle grupper");
 		/*group_frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);*/
@@ -191,7 +192,7 @@ public class Jsc_controller {
 				group_frame.setVisible(false);
 			}
 		});*/
-		
+
 		// Make the main window
 		main_frame = new JFrame("Java System Control");
 		main_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -199,14 +200,14 @@ public class Jsc_controller {
 		main_frame.pack();
 		main_frame.setSize(500, 500);
 		main_frame.setVisible(true);
-		
-		
+
+
 	}
 
 	private static String WAKEUP_COMMAND = "wol";
 	private static String SHUTDOWN_COMMAND = "shutdown";
 	private static String REBOOT_COMMAND = "reboot";
-	
+
 	public class buttonListner implements ActionListener
 	{
 		JPanel panel;
@@ -214,12 +215,12 @@ public class Jsc_controller {
 		{
 			this.panel = panel;
 		}
-		
+
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
 
 			MenuItem[] selected = tree.currentSelected();
-			
+
 			for (int i = 0; i < selected.length; i++) {
 				if (WAKEUP_COMMAND.equals(command)) {
 					selected[i].wakeup();
@@ -229,7 +230,7 @@ public class Jsc_controller {
 					selected[i].reboot();
 				}
 			}
-			
+
 			panel.repaint();
 		}
 	}
@@ -282,7 +283,7 @@ public class Jsc_controller {
 		System.out.println("Machines found: " + machines);
 		System.out.println("NEC projectors found: " + projector_nec);
 	}
-	
+
 	public synchronized void updateStatuses ()
 	{
 		for (Group item2 : groups) {
@@ -291,25 +292,43 @@ public class Jsc_controller {
 		for (MenuItem item : menuitems) {
 			item.getStatusText();
 		}
-		
+
 		tree.updateTree();
 	}
-	
+
 	public void getGroups () {
 		groups = new ArrayList<Group>();
-		
+
 		// Make the group "All machines"
 		this.addGroup(T.t("All machines"));
 		for (MenuItem item : menuitems) {
 			this.addContentLastGroup(item);
 		}
-		
+
 		// Getting groups
 		File groupsettings = new File(System.getProperty("user.home") + File.separatorChar + "jsc_config" + File.separatorChar + "groups.conf");
-		
+
+		if(!groupsettings.exists()) {
+			// Create config file
+			try {
+				File file = new File(groupsettings.getAbsolutePath());
+				boolean FileCreated = file.createNewFile();
+				if (FileCreated) {
+					System.out.println("Successfully created config empty config file @ "+ groupsettings.getAbsolutePath());
+					writeToConfig(groupsettings.getAbsolutePath());
+				} else {
+					System.out.println("File allready exists");
+				}
+			} catch (IOException e) {
+				System.out.println("Error: "+e);
+			}
+			
+		}
+
 		if(!groupsettings.exists())
 		{
 			System.out.println("Can't find groups.conf. Was trying "+groupsettings.getAbsolutePath());
+
 		}	
 		else
 		{
@@ -317,10 +336,10 @@ public class Jsc_controller {
 			FileInputStream fis = null;
 			BufferedInputStream bis = null;
 			DataInputStream dis = null;
-			
+
 			try {
 				fis = new FileInputStream(groupsettings);
-				
+
 				// Here BufferedInputStream is added for fast reading.
 				bis = new BufferedInputStream(fis);
 				dis = new DataInputStream(bis);
@@ -337,7 +356,7 @@ public class Jsc_controller {
 							// New group
 							this.addGroup(line.substring(1, line.length()-1));
 						}
-						
+
 						/* Group settings */
 						else if (line.equals("mainwindow"))
 						{
@@ -367,7 +386,7 @@ public class Jsc_controller {
 						{
 							lastGroup().shutdown_msg = line.substring("shutdown_msg ".length());
 						}
-						
+
 						/* Group content */
 						else if (line.startsWith("projectorNEC ") && line.length() > 13) {
 							try {
@@ -401,12 +420,12 @@ public class Jsc_controller {
 						}
 					}
 				}
-				
+
 				// dispose all the resources after using them.
 				fis.close();
 				bis.close();
 				dis.close();
-				
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -417,7 +436,7 @@ public class Jsc_controller {
 			}
 		}
 	}
-	
+
 	public void populateTree()
 	{
 		// Leser grupper
@@ -444,51 +463,51 @@ public class Jsc_controller {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 		private JTree realtree;
-	    private DefaultTreeModel treeModel;
-	    private DefaultMutableTreeNode rootNode;
+		private DefaultTreeModel treeModel;
+		private DefaultMutableTreeNode rootNode;
 		public JSCTree()
 		{
 			super(new GridLayout(1, 0));
-			
+
 			rootNode = new DefaultMutableTreeNode(namerootnode);
 			treeModel = new DefaultTreeModel(rootNode);
-			
+
 			realtree = new JTree(treeModel);
 			JScrollPane treeView = new JScrollPane(realtree);
 			treeView.setBorder(BorderFactory.createTitledBorder("Maskiner"));
 			setLayout(new BorderLayout(0,0));
 			add(treeView);
-			
+
 			realtree.setShowsRootHandles(true);
-			
+
 			setSize(dimension_tree);
 		}
-		
+
 		public DefaultMutableTreeNode addObject(MenuItem item)
 		{
 			return addObject(item, null);
 		}
-		
+
 		public DefaultMutableTreeNode addObject(MenuItem item, DefaultMutableTreeNode parent)
 		{
 			if (parent == null) {
 				parent = rootNode;
 			}
-			
+
 			DefaultMutableTreeNode item2 = new DefaultMutableTreeNode(item);
 			treeModel.insertNodeInto(item2, parent, 
 					parent.getChildCount());
 			return item2;
 		}
-		
+
 		public void viewRoot()
 		{
 			DefaultMutableTreeNode child = (DefaultMutableTreeNode)rootNode.getFirstChild();
 			realtree.scrollPathToVisible(new TreePath(child.getPath()));
 		}
-		
+
 		public MenuItem[] currentSelected()
 		{
 			TreePath[] tmp = realtree.getSelectionPaths();
@@ -499,15 +518,15 @@ public class Jsc_controller {
 				tmp3 = (DefaultMutableTreeNode)tmp[i].getLastPathComponent();
 				tmp2[i] = (MenuItem)tmp3.getUserObject();
 			}
-			
+
 			return tmp2;
 		}
-		
+
 		public void updateTree ()
 		{
 			for (Enumeration e = rootNode.breadthFirstEnumeration(); e.hasMoreElements();) {
 				DefaultMutableTreeNode c = (DefaultMutableTreeNode) e.nextElement();
-				
+
 				treeModel.valueForPathChanged(
 						new TreePath(c.getPath()), 
 						c.getUserObject());
@@ -515,26 +534,107 @@ public class Jsc_controller {
 			//treeModel.reload();
 		}
 	}
-	
+
 
 	public void addGroup(String gruppe_navn) {
 		groups.add(new Group(gruppe_navn));
 	}
-	
+
+	public void writeToConfig(String config_file) {
+		System.out.println("File: "+ config_file);
+		int keep_on = JOptionPane.showConfirmDialog(null, "No groups are defined, do you want to define groups in the config file now?");
+		System.out.println(keep_on);
+		if(keep_on == 0) {
+			keep_on = JOptionPane.showConfirmDialog(null,"Do you want me to add some example data for you?");
+			if (keep_on == 0) {
+				writeExampleData(config_file);
+			}
+			try {
+				File file = new File(config_file);
+				Desktop desktop = null;
+				if (Desktop.isDesktopSupported()) {
+					desktop = Desktop.getDesktop();
+				}
+				desktop.edit(file);
+			} catch (IOException e) {
+				System.out.println(e);
+			}
+		} else {
+			keep_on = JOptionPane.showConfirmDialog(null,"Do you want me to load example groups into the config file?");
+			if (keep_on == 0) {
+				writeExampleData(config_file);
+			}
+		}
+	}
+
+	public void writeExampleData(String file) {
+		BufferedWriter ftw = null;
+		try {
+			ftw = new BufferedWriter(new FileWriter(file));
+
+			ftw.write("[groupname]");
+			ftw.newLine();
+			ftw.write("00:00:00:00:00:00");
+			ftw.newLine();
+			ftw.newLine();
+			ftw.write("[Next group]");
+			ftw.newLine();
+			ftw.write("00:00:00:00:00:00");
+			ftw.newLine();
+			ftw.write("projectorNEC Projectorname");
+			ftw.newLine();
+			ftw.write("projectorPD Projectorname2");
+			ftw.newLine();
+			ftw.write("00:00:00:00:00:00");
+			ftw.newLine();
+			ftw.newLine();
+			ftw.write("[Group in mainwindow]");
+			ftw.newLine();
+			ftw.write("mainwindow");
+			ftw.newLine();
+			ftw.write("00:00:00:00:00:00");
+			ftw.newLine();
+			ftw.write("00:00:00:00:00:00");
+			ftw.newLine();
+			ftw.newLine();
+			ftw.write("[Group without shutdown and wakeup]");
+			ftw.newLine();
+			ftw.write("shutdown_msg This group can not be shut down");
+			ftw.newLine();
+			ftw.write("shutdown_disabled");
+			ftw.newLine();
+			ftw.write("wakeup_msg No wakeup");
+			ftw.newLine();
+			ftw.write("wakeup_disabled");
+			ftw.newLine();
+		} catch (IOException e){
+			System.out.println("Error: "+ e);
+		} finally {
+			try {
+				if (ftw != null) {
+					ftw.flush();
+					ftw.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public void addContentLastGroup (MenuItem item)
 	{
 		groups.get(groups.size()-1).addContent (item);
 	}
-	
+
 	public void addGroupContent (int gruppe_num, MenuItem maskin) {
 		groups.get(gruppe_num).addContent (maskin);
 	}
-	
+
 	public Group lastGroup ()
 	{
 		return groups.get(groups.size()-1);
 	}
-	
+
 	public class ItemList<E> extends ArrayList<E>
 	{
 
@@ -542,11 +642,11 @@ public class Jsc_controller {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		
-		
+
+
 		public int indexOf (String uniqueid, int type) throws Exception
 		{
-			
+
 			for (int i = 0; i < size(); i++) {
 				Object item = get(i);
 				if(type == type_machine)
@@ -573,7 +673,7 @@ public class Jsc_controller {
 			return -1;
 		}
 	}
-	
+
 	class group_onoff implements ActionListener
 	{
 		Group    group;
@@ -593,7 +693,7 @@ public class Jsc_controller {
 				{
 					JOptionPane.showMessageDialog(null, group.wakeup_msg);
 				}
-				
+
 				if(group.wakeup_enabled)
 				{
 					group.wakeup();
@@ -607,7 +707,7 @@ public class Jsc_controller {
 				{
 					JOptionPane.showMessageDialog(null, group.shutdown_msg);
 				}
-				
+
 				if(group.shutdown_enabled)
 				{
 					group.shutdown();
@@ -616,6 +716,6 @@ public class Jsc_controller {
 			}
 			group.getStatusText(); // Updates the status text
 		}
-		
+
 	}
 }
