@@ -5,20 +5,26 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Desktop;
 import java.io.*;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -53,6 +59,10 @@ public class Jsc_controller {
 
 	protected int                 statusupdate_rate_seconds = 60;
 
+	protected String projector_username = "";
+	protected String projector_password = "";
+	boolean wait_for_input = false;
+
 	// Types of menuitems
 	public static int type_machine = 1;
 	public static int type_projectorNEC = 2;
@@ -60,10 +70,133 @@ public class Jsc_controller {
 	//
 	private JFrame main_frame;
 	private JFrame group_frame;
+	private JFrame projector_frame;
+	private JFrame account_frame;
+
+	//TextFields
+	JTextField txt_projector_name;
+	JTextField txt_projector_ip;
+	JTextField txt_projector_username;
+	JPasswordField txt_projector_password;
+
+	//Combo box
+	JComboBox projectorList;
+	String list_result;
 
 	public Jsc_controller () {
 		getMenuItems();
 		getGroups();
+
+		/************ USERNAME AND PASSWORD PANEL ************/
+
+		// Setting up panel
+		JPanel account_panel = new JPanel();
+		account_panel.setLayout(new GridLayout(0, 2));
+		//projector_panel.setLayout(new BorderLayout(0,0));
+		account_panel.setSize(dimension_frame);
+
+		//Labels
+		JLabel lbl_projector_username = new JLabel("Brukernavn:");
+		JLabel lbl_projector_password = new JLabel("Passord:");
+
+		//buttons
+		JButton saveAccountButton = new JButton("Lagre");
+		saveAccountButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				if (txt_projector_username.getText().equals(""))
+				{
+					projector_username = "";
+				} else {
+					projector_username = txt_projector_username.getText();
+				}
+				if (txt_projector_password.getText().equals(""))
+				{
+					projector_password = "";
+				} else {
+					projector_password = txt_projector_password.getText();
+				}
+
+				account_frame.setVisible(false);
+				writeToProjectorConfig(txt_projector_ip.getText(),txt_projector_name.getText(),list_result);
+
+
+			}
+		});
+
+		//TextFields
+		txt_projector_username = new JTextField();
+		txt_projector_password = new JPasswordField();
+
+		// add to panel
+
+		account_panel.add(lbl_projector_username);
+		account_panel.add(txt_projector_username);
+
+		account_panel.add(lbl_projector_password);
+		account_panel.add(txt_projector_password);
+
+		account_panel.add(saveAccountButton);
+
+		/************ PROJECTOR PANEL ************/
+
+		// Setting up panel
+		JPanel projector_panel = new JPanel();
+		projector_panel.setLayout(new GridLayout(0, 2));
+		//projector_panel.setLayout(new BorderLayout(0,0));
+		projector_panel.setSize(dimension_frame);
+
+
+		//Labels
+		JLabel lbl_projector_type = new JLabel("Type:");
+		JLabel lbl_projector_name = new JLabel("Navn:");
+		JLabel lbl_projector_ip = new JLabel("IP:");
+
+		//Buttons
+		JButton saveButton = new JButton("Lagre");
+		saveButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				validateNewProjector();
+
+			}
+		});
+
+		//TextFields
+		txt_projector_ip = new JTextField();
+		txt_projector_name = new JTextField();
+
+		// Drop down list of projectors
+		String[] projectorDropdown = {"NEC","HITACHI","PD" };
+		projectorList = new JComboBox(projectorDropdown);
+		projectorList.setSelectedIndex(0);
+		list_result = (String)projectorList.getSelectedItem();
+		projectorList.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				list_result = (String)projectorList.getSelectedItem();
+
+			}
+		});
+
+		// add to panel
+
+		projector_panel.add(lbl_projector_type);
+		projector_panel.add(projectorList);
+
+		projector_panel.add(lbl_projector_ip);
+		projector_panel.add(txt_projector_ip);
+
+		projector_panel.add(lbl_projector_name);
+		projector_panel.add(txt_projector_name);
+
+		projector_panel.add(saveButton);
 
 
 		/************ GROUP WINDOW ************/
@@ -79,11 +212,11 @@ public class Jsc_controller {
 		group_panel.add(tree, BorderLayout.CENTER);
 
 		// Buttons
-		JButton wakeupButton = new JButton("Sl� p�");
+		JButton wakeupButton = new JButton("SlÂ pÂ");
 		wakeupButton.setActionCommand(WAKEUP_COMMAND);
 		wakeupButton.addActionListener(new buttonListner(group_panel));
 
-		JButton shutdownButton = new JButton("Sl� av");
+		JButton shutdownButton = new JButton("SlÂ av");
 		shutdownButton.setActionCommand(SHUTDOWN_COMMAND);
 		shutdownButton.addActionListener(new buttonListner(group_panel));
 
@@ -91,10 +224,20 @@ public class Jsc_controller {
 		rebootButton.setActionCommand(REBOOT_COMMAND);
 		rebootButton.addActionListener(new buttonListner(group_panel));
 
-		JPanel panel = new JPanel(new GridLayout(0,3));
+		JButton addProjector = new JButton("Ny prosjektør");
+		addProjector.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				projector_frame.setVisible(true);
+			}
+		});
+
+		JPanel panel = new JPanel(new GridLayout(0,4));
 		panel.add(wakeupButton);
 		panel.add(shutdownButton);
 		panel.add(rebootButton);
+		panel.add(addProjector);
 		group_panel.add(panel, BorderLayout.SOUTH);
 
 
@@ -136,6 +279,7 @@ public class Jsc_controller {
 				gp_buttonsandstatus.add(gp_buttons);
 				gp_buttonsandstatus.add(gp_status);
 
+
 				gp.add(gp_buttonsandstatus);
 				main_panel2.add(gp);
 			}
@@ -173,6 +317,20 @@ public class Jsc_controller {
 		}).start();
 
 		/**** FRAMES ****/
+
+
+		//make the projector window
+		projector_frame = new JFrame("Legg til ny prosjektør");
+		projector_frame.add(projector_panel);
+		projector_frame.pack();
+		//projector_frame.setSize(500, 500);
+		projector_frame.setLocation(200, 200);
+
+		account_frame = new JFrame("Brukerinformasjon");
+		account_frame.add(account_panel);
+		account_frame.pack();
+		account_frame.setSize(300, 100);
+		account_frame.setLocation(200, 200);
 
 		// Make the window
 		group_frame = new JFrame("Java System Control - alle grupper");
@@ -250,6 +408,8 @@ public class Jsc_controller {
 		menuitems = new ItemList<MenuItem>();
 		int machines = 0;
 		int projector_nec = 0;
+		int projector_hitachi = 0;
+		int projector_pd = 0;
 		for (int i = 0; i < dirlist.length; i++) {
 			//System.out.println("i = " + i + ", dirlist[i] = " + dirlist[i]);
 			if(dirlist[i].startsWith("machine_") && dirlist[i].length() > 12)
@@ -274,9 +434,33 @@ public class Jsc_controller {
 					System.exit(1);
 				}
 			}
+			else if(dirlist[i].startsWith("projector_Hitachi_") && dirlist[i].length() > 18)
+			{
+				projector_hitachi++;
+				try {
+					// TODO: use itemList.equals
+					menuitems.add(new ProjectorHitachi(dirlist[i].substring(18, dirlist[i].length()-4)));
+				} catch (CantFindMachine a){
+					System.out.println("Problem with Hitachi projector " + dirlist[i].substring(18, dirlist[i].length()-4));
+					System.exit(1);
+				}
+			}
+			else if(dirlist[i].startsWith("projector_PD_") && dirlist[i].length() > 18)
+			{
+				projector_pd++;
+				try {
+					// TODO: use itemList.equals
+					menuitems.add(new ProjectorPD(dirlist[i].substring(14, dirlist[i].length()-4)));
+				} catch (CantFindMachine a){
+					System.out.println("Problem with PD projector " + dirlist[i].substring(14, dirlist[i].length()-4));
+					System.exit(1);
+				}
+			}
 		}
 		System.out.println("Machines found: " + machines);
 		System.out.println("NEC projectors found: " + projector_nec);
+		System.out.println("Hitachi projectors found: " + projector_hitachi);
+		System.out.println("PD projectors found: " + projector_pd);
 	}
 
 	public synchronized void updateStatuses ()
@@ -317,7 +501,7 @@ public class Jsc_controller {
 			} catch (IOException e) {
 				System.out.println("Error: "+e);
 			}
-			
+
 		}
 
 		if(!groupsettings.exists())
@@ -392,13 +576,22 @@ public class Jsc_controller {
 										line.substring(13));
 							}
 						}
-						else if (line.startsWith("projectorPD ") && line.length() > 12) {
+						else if (line.startsWith("projectorPD ") && line.length() > 9) {
 							try {	
-								ProjectorPD element = new ProjectorPD (line.substring(12));
+								ProjectorPD element = new ProjectorPD (line.substring(9));
 								this.addContentLastGroup(element);
 							} catch (CantFindMachine e) {
 								System.out.println("Can't find a config file for PD projector: " + 
-										line.substring(12));
+										line.substring(9));
+							}
+						}
+						else if (line.startsWith("projectorHitachi ") && line.length() > 16) {
+							try {	
+								ProjectorHitachi element = new ProjectorHitachi (line.substring(12));
+								this.addContentLastGroup(element);
+							} catch (CantFindMachine e) {
+								System.out.println("Can't find a config file for Hitachi projector: " + 
+										line.substring(16));
 							}
 						}
 						else {
@@ -623,6 +816,66 @@ public class Jsc_controller {
 
 	public void addGroupContent (int gruppe_num, MenuItem maskin) {
 		groups.get(gruppe_num).addContent (maskin);
+	}
+
+	private void validateNewProjector() {
+		boolean validateStatus = true;
+		String projectorError = "";
+
+		if (txt_projector_name.getText().length() <= 5) {
+			projectorError = projectorError + "* No name for the projector is specified!\n";
+			validateStatus = false;
+		}
+
+		if (txt_projector_ip.getText() != null)
+		{
+
+			if (txt_projector_ip.getText().length() < 7 )
+			{
+				projectorError = projectorError + "* The IP address is not valid\n";
+				validateStatus = false;
+			}
+		}
+		projector_frame.setVisible(false);
+		if (validateStatus == false) {
+			JOptionPane.showMessageDialog(null, projectorError,"Ugyldige parametre",JOptionPane.ERROR_MESSAGE);
+		} else {
+			if(list_result.equals("NEC"))
+			{
+				writeToProjectorConfig(txt_projector_ip.getText(),txt_projector_name.getText(),list_result);
+			}else {
+				account_frame.setVisible(true);
+			}
+		}
+	}
+
+	private void writeToProjectorConfig(String ip, String name, String type) {
+
+		// "(0)NEC","(1)HITACHI","(2)PD"
+		if (type.equals("NEC")) {
+
+			try {
+				ProjectorNEC projector = new ProjectorNEC(name, ip);
+			} catch (CantFindMachine e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		else if (type.equals("PD")) {
+			//TODO: Legge til Brukernavn og passord funksjon på akkuratt denne prosjektoren.
+			try {
+				ProjectorPD projector = new ProjectorPD(name, ip,projector_username,projector_password);
+			} catch (CantFindMachine e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		else if (type.equals("HITACHI")) {
+			//TODO: Legge til Brukernavn og passord funksjon på akkuratt denne prosjektoren.
+			try {
+				ProjectorHitachi projector = new ProjectorHitachi(name, ip,projector_username,projector_password);
+			} catch (CantFindMachine e) {
+				System.out.println(e.getMessage());
+			}
+		}
 	}
 
 	public Group lastGroup ()
