@@ -451,9 +451,9 @@ public class Jsc_controller {
 				projector_pd++;
 				try {
 					// TODO: use itemList.equals
-					menuitem = new ProjectorPD(dirlist[i].substring(14, dirlist[i].length()-4));
+					menuitem = new ProjectorPD(dirlist[i].substring(13, dirlist[i].length()-4));
 				} catch (CantFindMachine a){
-					System.out.println("Problem with PD projector " + dirlist[i].substring(14, dirlist[i].length()-4));
+					System.out.println("Problem with PD projector " + dirlist[i].substring(13, dirlist[i].length()-4));
 					menuitem = null;
 				}
 			}
