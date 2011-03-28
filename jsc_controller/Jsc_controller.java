@@ -150,12 +150,12 @@ public class Jsc_controller {
 
 
 		//Labels
-		JLabel lbl_projector_type = new JLabel("Type:");
-		JLabel lbl_projector_name = new JLabel("Navn:");
-		JLabel lbl_projector_ip = new JLabel("IP:");
+		JLabel lbl_projector_type = new JLabel(T.t("Type")+":");
+		JLabel lbl_projector_name = new JLabel(T.t("Name")+":");
+		JLabel lbl_projector_ip = new JLabel(T.t("IP")+":");
 
 		//Buttons
-		JButton saveButton = new JButton("Lagre");
+		JButton saveButton = new JButton(T.t("Save"));
 		saveButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -212,19 +212,19 @@ public class Jsc_controller {
 		group_panel.add(tree, BorderLayout.CENTER);
 
 		// Buttons
-		JButton wakeupButton = new JButton("SlÂ pÂ");
+		JButton wakeupButton = new JButton(T.t("Turn on"));
 		wakeupButton.setActionCommand(WAKEUP_COMMAND);
 		wakeupButton.addActionListener(new buttonListner(group_panel));
 
-		JButton shutdownButton = new JButton("SlÂ av");
+		JButton shutdownButton = new JButton(T.t("Turn off"));
 		shutdownButton.setActionCommand(SHUTDOWN_COMMAND);
 		shutdownButton.addActionListener(new buttonListner(group_panel));
 
-		JButton rebootButton = new JButton("Restart");
+		JButton rebootButton = new JButton(T.t("Restart"));
 		rebootButton.setActionCommand(REBOOT_COMMAND);
 		rebootButton.addActionListener(new buttonListner(group_panel));
 
-		JButton addProjector = new JButton("Ny prosjektør");
+		JButton addProjector = new JButton(T.t("New projector"));
 		addProjector.addActionListener(new ActionListener() {
 
 			@Override
@@ -320,20 +320,20 @@ public class Jsc_controller {
 
 
 		//make the projector window
-		projector_frame = new JFrame("Legg til ny prosjektør");
+		projector_frame = new JFrame(T.t("Add new projector"));
 		projector_frame.add(projector_panel);
 		projector_frame.pack();
 		//projector_frame.setSize(500, 500);
 		projector_frame.setLocation(200, 200);
 
-		account_frame = new JFrame("Brukerinformasjon");
+		account_frame = new JFrame(T.t("User information"));
 		account_frame.add(account_panel);
 		account_frame.pack();
 		account_frame.setSize(300, 100);
 		account_frame.setLocation(200, 200);
 
 		// Make the window
-		group_frame = new JFrame("Java System Control - alle grupper");
+		group_frame = new JFrame("Java System Control - " + T.t("all groups"));
 		/*group_frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);*/
 		group_frame.add(group_panel);
 		group_frame.pack();

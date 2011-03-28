@@ -149,7 +149,7 @@ public abstract class ProjectorMenuItem extends MenuItem {
 		switch (getStatus())
 		{
 			case 1: // ping_ok
-				return "På";
+				return "PÃ¥";
 			case 2: // ikke_ping
 				return "Av";
 			case 3: // restart_sendt

@@ -7,9 +7,9 @@ public class Translator {
 		if(english.equals("All machines"))
 				return "Alle maskiner";
 		else if(english.equals("All is online"))
-			return "Alle er pÂ";
+			return "Alle er p√•";
 		else if(english.equals("is online"))
-			return "er pÂ";
+			return "er p√•";
 		else if(english.equals("All is offline"))
 			return "Alle er av";
 		else if(english.equals("is offline"))
@@ -19,9 +19,9 @@ public class Translator {
 		else if(english.equals("is restarting"))
 			return "restarter";
 		else if(english.equals("All is shuting down"))
-			return "Alle slÂs av";
+			return "Alle sl√•s av";
 		else if(english.equals("is shuting down"))
-			return "slÂs av";
+			return "sl√•s av";
 		else if(english.equals("All is starting up"))
 			return "Alle starter opp";
 		else if(english.equals("is starting up"))
@@ -31,17 +31,40 @@ public class Translator {
 		else if(english.equals("has an error"))
 			return "har en feil";
 		else if(english.equals("Turn off"))
-			return "SlÂ av";
+			return "Sl√• av";
 		else if(english.equals("Turn on"))
-			return "SlÂ pÂ";
+			return "Sl√• p√•";
 		else if(english.equals("Show all groups"))
 			return "Vis alle grupper";
 		else if(english.equals("is on in"))
-			return "er pÂ om";
+			return "er p√• om";
 		else if(english.equals("is off in"))
 			return "er av om";
 		else if(english.equals("seconds"))
 			return "sekunder";
+		else if(english.equals("Save"))
+			return "Lagre";
+		else if(english.equals("Type"))
+			return "Type";
+		else if(english.equals("Name"))
+			return "Navn";
+		else if(english.equals("Restart"))
+			return "Restart";
+		else if(english.equals("New projector"))
+			return "Ny prosjekt√∏r";
+		else if(english.equals("IP"))
+			return "IP";
+		else if(english.equals("Add new projector"))
+			return "Legg til ny prosjekt√∏r";
+		else if(english.equals("User information"))
+			return "Brukerinformasjon";
+		else if(english.equals("all groups"))
+			return "alle grupper";
+		else if(english.equals("IP"))
+			return "IP";
+		else if(english.equals("IP"))
+			return "IP";
+		
 		
 		System.out.println("Unknown translation for \""+english+"\"");
 		return english;
