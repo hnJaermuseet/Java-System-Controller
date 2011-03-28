@@ -412,15 +412,16 @@ public class Jsc_controller {
 		int projector_pd = 0;
 		for (int i = 0; i < dirlist.length; i++) {
 			//System.out.println("i = " + i + ", dirlist[i] = " + dirlist[i]);
+			MenuItem menuitem = null;
 			if(dirlist[i].startsWith("machine_") && dirlist[i].length() > 12)
 			{
 				machines++;
 				try {
 					// TODO: use itemList.equals
-					menuitems.add(new Machine(dirlist[i].substring(8, dirlist[i].length()-4)));
+					menuitem = new Machine(dirlist[i].substring(8, dirlist[i].length()-4));
 				} catch (CantFindMachine a){
 					System.out.println("Problem with the machine " + dirlist[i].substring(8, dirlist[i].length()-4));
-					System.exit(1);
+					menuitem = null;
 				}
 			}
 			else if(dirlist[i].startsWith("projector_NEC_") && dirlist[i].length() > 18)
@@ -428,10 +429,10 @@ public class Jsc_controller {
 				projector_nec++;
 				try {
 					// TODO: use itemList.equals
-					menuitems.add(new ProjectorNEC(dirlist[i].substring(14, dirlist[i].length()-4)));
+					menuitem = new ProjectorNEC(dirlist[i].substring(14, dirlist[i].length()-4));
 				} catch (CantFindMachine a){
 					System.out.println("Problem with NEC projector " + dirlist[i].substring(14, dirlist[i].length()-4));
-					System.exit(1);
+					menuitem = null;
 				}
 			}
 			else if(dirlist[i].startsWith("projector_Hitachi_") && dirlist[i].length() > 18)
@@ -439,10 +440,10 @@ public class Jsc_controller {
 				projector_hitachi++;
 				try {
 					// TODO: use itemList.equals
-					menuitems.add(new ProjectorHitachi(dirlist[i].substring(18, dirlist[i].length()-4)));
+					menuitem = new ProjectorHitachi(dirlist[i].substring(18, dirlist[i].length()-4));
 				} catch (CantFindMachine a){
 					System.out.println("Problem with Hitachi projector " + dirlist[i].substring(18, dirlist[i].length()-4));
-					System.exit(1);
+					menuitem = null;
 				}
 			}
 			else if(dirlist[i].startsWith("projector_PD_") && dirlist[i].length() > 18)
@@ -450,12 +451,15 @@ public class Jsc_controller {
 				projector_pd++;
 				try {
 					// TODO: use itemList.equals
-					menuitems.add(new ProjectorPD(dirlist[i].substring(14, dirlist[i].length()-4)));
+					menuitem = new ProjectorPD(dirlist[i].substring(14, dirlist[i].length()-4));
 				} catch (CantFindMachine a){
 					System.out.println("Problem with PD projector " + dirlist[i].substring(14, dirlist[i].length()-4));
-					System.exit(1);
+					menuitem = null;
 				}
 			}
+			
+			if(menuitem != null)
+				menuitems.add(menuitem);
 		}
 		System.out.println("Machines found: " + machines);
 		System.out.println("NEC projectors found: " + projector_nec);
