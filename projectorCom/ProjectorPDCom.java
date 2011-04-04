@@ -18,7 +18,9 @@ import jsc_controller.Log;
  * 
  * The web interface uses POST for turning on or off but GET also works.
  * 
- * @author Hallvard Nygård <hn@jaermuseet.no>
+ * Default username/password admin/admin
+ * 
+ * @author Hallvard NygÃ¥rd <hn@jaermuseet.no>
  */
 public class ProjectorPDCom implements ProjectorCom
 {
