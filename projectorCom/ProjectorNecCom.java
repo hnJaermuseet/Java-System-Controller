@@ -18,7 +18,7 @@ import jsc_controller.Log;
  * 
  * Commands copied from Javascript in NECs web interface
  * 
- * @author Hallvard Nygård <hn@jaermuseet.no>
+ * @author Hallvard Nygï¿½rd <hn@jaermuseet.no>
  */
 public class ProjectorNecCom implements ProjectorCom {
 	
@@ -75,7 +75,7 @@ public class ProjectorNecCom implements ProjectorCom {
 	        	//System.out.println(str);
 	        	if(status)
 	        	{
-	        		// TODO: Match på textfield5, at dette lagres og vises via whenSelected()
+	        		// TODO: Match pï¿½ textfield5, at dette lagres og vises via whenSelected()
 	        		if(str.equals(new String("top.consoleN.document.stat.textfield5.value='Normal operation';")))
 	        			normalop = true;
 	        		else if (str.equals(new String("top.consoleN.swapimg('power_on', './images/power_on_g.png');")))
@@ -120,15 +120,16 @@ public class ProjectorNecCom implements ProjectorCom {
 				}
 			}
 		} catch (FileNotFoundException e) {
+			System.out.println("projectorNecCom, " + ip + ": FileNotFoundException: " + e);
 			Log.saveLog("projectorNecCom", ip + ": FileNotFoundException: " + e);
 			return 9;
 		} catch (MalformedURLException e) {
+			System.out.println("projectorNecCom, " + ip + ": MalformedURLException: " + e);
 			Log.saveLog("projectorNecCom", ip + ": MalformedURLException: " + e);
-			System.out.println(e);
 			return 8;
 		} catch (IOException e) {
+			System.out.println("projectorNecCom, " + ip + ": IOException: " + e);
 			Log.saveLog("projectorNecCom", ip + ": IOException: " + e);
-			System.out.println(e);
 			return 8;
 		}
 		

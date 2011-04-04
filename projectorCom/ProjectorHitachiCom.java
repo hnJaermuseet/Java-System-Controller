@@ -158,11 +158,11 @@ public class ProjectorHitachiCom implements ProjectorCom
 			}
 			
 		} catch (MalformedURLException e) {
-			System.out.println(e);
+			System.out.println("projectorHitachiCom, " + ip + ": MalformedURLException: " + e);
 			Log.saveLog("projectorHitachiCom", ip + ": MalformedURLException: " + e);
 			return 8;
 		} catch (IOException e) {
-			System.out.println(e);
+			System.out.println("projectorHitachiCom, " + ip + ": IOException: " + e);
 			Log.saveLog("projectorHitachiCom", ip + ": IOException: " + e);
 			return 8;
 		}

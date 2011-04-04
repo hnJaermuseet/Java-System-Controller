@@ -117,11 +117,11 @@ public class ProjectorPDCom implements ProjectorCom
 	        	}
 	        }
 		} catch (MalformedURLException e) {
-			System.out.println(e);
+			System.out.println("projectorPDCom, " + ip + ": MalformedURLException: " + e);
 			Log.saveLog("projectorPDCom", ip + ": MalformedURLException: " + e);
 			return 8;
 		} catch (IOException e) {
-			System.out.println(e);
+			System.out.println("projectorPDCom, " + ip + ": IOException: " + e);
 			Log.saveLog("projectorPDCom", ip + ": IOException: " + e);
 			return 8;
 		}

@@ -152,14 +152,14 @@ public class Machine extends MenuItem {
 			try {
 				loadConfig();
 			} catch (Exception e) {
-				System.out.println("Exception - "+getName()+": " + e);
+				Log.saveLog(this.name, "Exception - "+getName()+": " + e);
 			} 
 		}
 		switch (status)
 		{
 			case 1: // ping_ok
-				// Sjekker om den enda er online
-				// (+ 20 for å ha margin)
+				// Check if its still online
+				// (+ 20 as a margin)
 				if((this.lastPing/1000) >= ((System.currentTimeMillis()/1000) - (this.pingSek + 20)))
 				{
 					Log.saveLog(this.name, "Is online.");
@@ -173,7 +173,7 @@ public class Machine extends MenuItem {
 					try {
 						saveConfig();
 					} catch (FileNotFoundException e ) {
-						System.out.println("Unable to save " + getName() + ": " +e);
+						Log.saveLog(this.name, "Unable to save " + getName() + ": " +e);
 					}
 					return 2;
 				}
@@ -186,7 +186,7 @@ public class Machine extends MenuItem {
 					try {
 						saveConfig();
 					} catch (FileNotFoundException e ) {
-						System.out.println("Unable to save " + getName() + ": " +e);
+						Log.saveLog(this.name, "Unable to save " + getName() + ": " +e);
 					}
 					return 2;
 				}
@@ -298,11 +298,11 @@ public class Machine extends MenuItem {
 			this.loadConfig();
 			this.updateStatus(7, false);
 			WakeUpUtil.wakeup(new EthernetAddress(this.mac));
-			System.out.println (this.getName() + " (" + this.mac + ") er på vei på.");
+			Log.saveLog(this.name, this.getName() + " (" + this.mac + ") is waking up.");
 			
 			this.saveConfig();
 		} catch (Exception e) {
-			System.out.println("Exception - "+getName()+": " + e);
+			Log.saveLog(this.name, "Exception - "+getName()+": " + e);
 		} 
 	}
 	
@@ -311,9 +311,9 @@ public class Machine extends MenuItem {
 			this.loadConfig();
 			this.updateStatus(5, false);
 			this.saveConfig();
-			System.out.println (this.getName() + " blir slått av innen " + pingSek + " sekund.");
+			Log.saveLog(this.name, this.getName() + " is shutting down within " + pingSek + " seconds.");
 		} catch (Exception e) {
-			System.out.println("Exception - "+getName()+": " + e);
+			Log.saveLog(this.name, "Exception - "+getName()+": " + e);
 		} 
 	}
 	
@@ -322,9 +322,9 @@ public class Machine extends MenuItem {
 			loadConfig();
 			updateStatus(3, false);
 			saveConfig();
-			System.out.println (this.getName() + " blir restartet innen " + pingSek + " sekund.");
+			Log.saveLog(this.name, this.getName() + " is restarting within " + pingSek + " seconds.");
 		} catch (Exception e) {
-			System.out.println("Exception - "+getName()+": " + e);
+			Log.saveLog(this.name, "Exception - "+getName()+": " + e);
 		} 
 	}
 	
@@ -337,7 +337,7 @@ public class Machine extends MenuItem {
 		try {
 			loadConfig();
 		} catch (Exception e) {
-			System.out.println("Exception - "+getName()+": " + e);
+			Log.saveLog(this.name, "Exception - "+getName()+": " + e);
 		} 
 		
 		return "Valgt: " + this.getName() +

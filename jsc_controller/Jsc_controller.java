@@ -615,7 +615,7 @@ public class Jsc_controller {
 							}
 							else
 							{
-								System.out.println("Finner ikke konfigrasjonsfil for maskinen med adresse " + line);
+								System.out.println("Can't find a config file the machine with address " + line);
 							}
 						}
 					}
