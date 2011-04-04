@@ -62,8 +62,8 @@ public class Translator {
 			return "alle grupper";
 		else if(english.equals("IP"))
 			return "IP";
-		else if(english.equals("IP"))
-			return "IP";
+		else if(english.equals("View more"))
+			return "Vis mer";
 		
 		
 		System.out.println("Unknown translation for \""+english+"\"");

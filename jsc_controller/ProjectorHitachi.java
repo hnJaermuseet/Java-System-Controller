@@ -16,8 +16,6 @@ public class ProjectorHitachi extends ProjectorMenuItem {
 	private String username;
 	private String password;
 	
-	protected String type = "projector-Hitachi";
-	
 	public ProjectorHitachi (String name, String ip, 
 			String username, String password) throws CantFindMachine {
 		try {

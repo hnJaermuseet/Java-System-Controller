@@ -2,6 +2,8 @@ package jsc_controller;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import projectorCom.ProjectorCom;
 import jsc_server.MenuItem;
@@ -10,8 +12,6 @@ public abstract class ProjectorMenuItem extends MenuItem {
 	protected String ip;
 	protected long last_ping;
 	protected int status;
-	
-	protected String type = "projector";
 	
 	protected long pingSek = 60; // 60 sek
 	
@@ -129,7 +129,7 @@ public abstract class ProjectorMenuItem extends MenuItem {
 			this.saveConfig();
 			
 			// Save log
-			Log.saveLog(this.name, "Status update: "+status);
+			Log.saveLog(this.name, "Status update: "+status+", newPing: " + ping);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -212,5 +212,27 @@ public abstract class ProjectorMenuItem extends MenuItem {
 			System.out.println("Not running another state on " + name 
 					+ ". Under 10 sec since last.");
 		}
+	}
+	
+
+	public String getViewText() {
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+		Date date = new Date(getLastPing());
+		
+		String lastping = sdf.format(date);
+		
+		
+		return super.getViewText() + 
+			"\n" +
+			
+			"IP: " + getIp() + "\n" +
+			"Last ping: " + lastping + "\n" +
+			"File: " + getFile().getAbsolutePath() + "\n" +
+			
+			"";
+	}
+
+	private Long getLastPing() {
+		return last_ping;
 	}
 }

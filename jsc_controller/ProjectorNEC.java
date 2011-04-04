@@ -13,8 +13,6 @@ import jsc_server.CantFindMachine;
 
 public class ProjectorNEC extends ProjectorMenuItem {
 	
-	protected String type = "projector-NEC";
-	
 	public ProjectorNEC (String name, String ip) throws CantFindMachine {
 		try {
 			this.name = name;
@@ -30,7 +28,7 @@ public class ProjectorNEC extends ProjectorMenuItem {
 				throw new CantFindMachine (e.getMessage());
 			}
 		} catch (CantFindMachine e) {
-			// Lager ny når den ikke finnes
+			// Make a new if it was not found
 			this.ip = ip;
 			try {
 				this.saveConfig();

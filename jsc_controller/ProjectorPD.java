@@ -16,8 +16,6 @@ public class ProjectorPD extends ProjectorMenuItem {
 	private String username;
 	private String password;
 	
-	protected String type = "projector-PD";
-	
 	public ProjectorPD (String name, String ip, 
 			String username, String password) throws CantFindMachine {
 		try {
@@ -36,7 +34,7 @@ public class ProjectorPD extends ProjectorMenuItem {
 				throw new CantFindMachine (e.getMessage());
 			}
 		} catch (CantFindMachine e) {
-			// Lager ny når den ikke finnes
+			// Make a new if it was not found
 			this.ip = ip;
 			try {
 				this.saveConfig();

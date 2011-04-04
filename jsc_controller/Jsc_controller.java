@@ -224,6 +224,10 @@ public class Jsc_controller {
 		rebootButton.setActionCommand(REBOOT_COMMAND);
 		rebootButton.addActionListener(new buttonListner(group_panel));
 
+		JButton viewButton = new JButton(T.t("View more"));
+		viewButton.setActionCommand(COMMAND_VIEWITEM);
+		viewButton.addActionListener(new buttonListner(group_panel));
+
 		JButton addProjector = new JButton(T.t("New projector"));
 		addProjector.addActionListener(new ActionListener() {
 
@@ -233,10 +237,11 @@ public class Jsc_controller {
 			}
 		});
 
-		JPanel panel = new JPanel(new GridLayout(0,4));
+		JPanel panel = new JPanel(new GridLayout(0,5));
 		panel.add(wakeupButton);
 		panel.add(shutdownButton);
 		panel.add(rebootButton);
+		panel.add(viewButton);
 		panel.add(addProjector);
 		group_panel.add(panel, BorderLayout.SOUTH);
 
@@ -256,7 +261,7 @@ public class Jsc_controller {
 				gp                   = new JPanel(new GridLayout(3,0));
 				gp_buttonsandstatus  = new JPanel(new FlowLayout(FlowLayout.LEFT));
 				gp_buttons           = new JPanel(new GridLayout(0, 2));
-				gp_txt = new JLabel(group.name);
+				gp_txt = new JLabel(group.getName());
 				gp_txt.setFont(new Font("Serif", Font.BOLD, 20));
 				gp.add(gp_txt);
 
@@ -360,6 +365,7 @@ public class Jsc_controller {
 	private static String WAKEUP_COMMAND = "wol";
 	private static String SHUTDOWN_COMMAND = "shutdown";
 	private static String REBOOT_COMMAND = "reboot";
+	private static String COMMAND_VIEWITEM = "viewitem";
 
 	public class buttonListner implements ActionListener
 	{
@@ -381,6 +387,8 @@ public class Jsc_controller {
 					selected[i].shutdown();
 				} else if (REBOOT_COMMAND.equals(command)) {
 					selected[i].reboot();
+				} else if(COMMAND_VIEWITEM.equals(command)) {
+					selected[i].viewItem(main_frame.getLocation());
 				}
 			}
 
@@ -949,7 +957,7 @@ public class Jsc_controller {
 				if(group.wakeup_enabled)
 				{
 					group.wakeup();
-					new CountDownWindow(group.name, on, group.getTurnonTime(), main_frame.getLocation());
+					new CountDownWindow(group.getName(), on, group.getTurnonTime(), main_frame.getLocation());
 				}
 			}
 			else
@@ -963,7 +971,7 @@ public class Jsc_controller {
 				if(group.shutdown_enabled)
 				{
 					group.shutdown();
-					new CountDownWindow(group.name, on, group.getTurnoffTime(), main_frame.getLocation());
+					new CountDownWindow(group.getName(), on, group.getTurnoffTime(), main_frame.getLocation());
 				}
 			}
 			group.getStatusText(); // Updates the status text

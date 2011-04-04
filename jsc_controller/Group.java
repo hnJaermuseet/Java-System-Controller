@@ -12,7 +12,6 @@ import jsc_server.MenuItem;
 
 public class Group extends MenuItem {
 	// TODO: Make private again
-	public String name;
 	protected ArrayList<MenuItem> group_items;
 	public boolean    mainwindow = false;
 	public JLabel     mainwindow_label;
@@ -31,6 +30,7 @@ public class Group extends MenuItem {
 		this.name = gruppe_navn;
 		
 		mainwindow_label  = new JLabel("");
+		
 	}
 	/*
 	public void addContent (String innhold_navn) {

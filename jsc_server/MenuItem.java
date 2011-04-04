@@ -1,5 +1,9 @@
 package jsc_server;
 
+import java.awt.Point;
+
+import jsc_controller.ViewMenuitem;
+
 public abstract class MenuItem {
 	
 	protected String elementTxt;
@@ -30,7 +34,7 @@ public abstract class MenuItem {
 	
 	
 	public String getType() {
-		return type;
+		return "" + this.getClass();
 	}
 	
 	public String whenSelected () {
@@ -47,5 +51,30 @@ public abstract class MenuItem {
 
 	public int getTurnoffTime() {
 		return time_turnoff;
+	}
+	
+	public String getViewText()
+	{
+		String txt =
+			"Name: " + getName() + "\n" +
+			"" + getType() + "\n" +
+			
+			"\n" +
+			"Status-txt: " + getStatusText() + "\n" +
+			"Status-code: " + getStatus() + "\n" +
+			
+			"\n" +
+			"Turnon time: " + getTurnonTime() + "\n" +
+			"Turnoff time: " + getTurnoffTime() + "\n" +
+			
+			"";
+		
+		return txt;
+	}
+	
+	public void viewItem(Point location_mainframe)
+	{
+		ViewMenuitem view;
+		view = new ViewMenuitem(this.getViewText(), location_mainframe);
 	}
 }

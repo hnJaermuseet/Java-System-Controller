@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -356,4 +358,21 @@ public class Machine extends MenuItem {
 		return time_turnoff;
 	}
 	
+	public String getViewText() {
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+		Date date = new Date(getLastPing());
+		
+		String lastping = sdf.format(date);
+		
+		
+		return super.getViewText() + 
+			"\n" +
+			
+			"MAC: " + getMac() + "\n" +
+			"IP: " + getIp() + "\n" +
+			"Last ping: " + lastping + "\n" +
+			"File: " + getFile().getAbsolutePath() + "\n" +
+			
+			"";
+	}
 }
