@@ -597,13 +597,13 @@ public class Jsc_controller {
 										line.substring(9));
 							}
 						}
-						else if (line.startsWith("projectorHitachi ") && line.length() > 16) {
+						else if (line.startsWith("projectorHitachi ") && line.length() > 17) {
 							try {	
-								ProjectorHitachi element = new ProjectorHitachi (line.substring(12));
+								ProjectorHitachi element = new ProjectorHitachi (line.substring(17));
 								this.addContentLastGroup(element);
 							} catch (CantFindMachine e) {
 								System.out.println("Can't find a config file for Hitachi projector: " + 
-										line.substring(16));
+										line.substring(17));
 							}
 						}
 						else {
@@ -834,7 +834,7 @@ public class Jsc_controller {
 		boolean validateStatus = true;
 		String projectorError = "";
 
-		if (txt_projector_name.getText().length() <= 5) {
+		if (txt_projector_name.getText().length() <= 0) {
 			projectorError = projectorError + "* No name for the projector is specified!\n";
 			validateStatus = false;
 		}
