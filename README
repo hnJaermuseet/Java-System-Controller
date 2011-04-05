@@ -2,8 +2,9 @@
 
 Program used to turn on and off machines and projectors at Vitenfabrikken, a science center in Sandnes, Norway.
 
-Author: Hallvard NygÂrd <hn@jaermuseet.no>
-Copyright 2008-2011 JÊrmuseet, Vitenfabrikken
+Author: Hallvard Nyg√•rd <hn@jaermuseet.no> (hnJaermuseet). 
+Contributor: Christer Nordb√∏ (Cnordbo)
+Copyright 2008-2011 J√¶rmuseet, Vitenfabrikken
 Released under CC-BY-SA lisence.
 
 Tested for startup and shutdown on Windows XP, Windows Vista (?) and Windows 7.
@@ -11,11 +12,15 @@ Tested for startup and shutdown on Windows XP, Windows Vista (?) and Windows 7.
 Supported projectors:
 - NEC NP1150
 - Projection Design F30
+- Hitachi Cp-a100
 
 Versions of JSC
 v1.0 - Used from Vitenfabrikkens opening in may 2008 to jan 2011. Turned on and off most of the exhibitions.
 v1.1 - Improved handling of projectors. PD F30 introduced. Better status handling. Also a lot of cleanup of the codebase.
 v1.2 - New main interface. Includes only button for turning on/off some selected groups and status for those groups.
+v1.2.2 - When turning on/off a group from main window, there can be displayed a message. Can also disable turn on/off for a group in main window. Also added logging of communications.
+v1.2.3 - Bug fix for NEC projectors. The projectors sometimes return no status and this made the program display the projector with an error. 
+v1.2.4 - Detailed view of machine, projectors, etc. Turn on/off Hitachi Cp-a100 is supported.
 
 ## How it works ##
 - Client software (jsc_systray) runs on all computers we want controll over
