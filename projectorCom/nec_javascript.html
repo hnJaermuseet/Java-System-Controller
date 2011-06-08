@@ -1,0 +1,183 @@
+<script language="JavaScript"> 
+<!--
+var req;
+var twait;
+var sourceSelect;
+var mute_pic_State;
+var mute_snd_State;
+var mute_osd_State;
+var power_on_waiting;
+ 
+function Refresh(){
+	var now = new Date();
+	var hh  = now.getHours();
+	var mm  = now.getMinutes();
+	var ss  = now.getSeconds();
+	var ti  =10000*hh+100*mm+ss;
+	var req = "/scripts/IsapiExtPj.dll?S=" + ti;
+	if(power_on_waiting == true)
+	{
+		req = req + "+E%00=%01";
+	}
+	window.open(req,'dummy');
+}
+function execCGI(cgi)
+{
+	var tmp = cgi + getClock();
+	if(power_on_waiting == true)
+	{
+		tmp = tmp + "+E%00=%01";
+	}
+	window.open(tmp, 'dummy');
+}
+ 
+function getClock()
+{
+	var now = new Date();
+ 
+	return 10000 * now.getHours() + 100 * now.getMinutes() + now.getSeconds();
+}
+ 
+function state()
+{
+	var now = new Date();
+	var ss  = now.getSeconds();
+ 
+	if(ss == twait) {
+		execCGI(req);
+	} else {
+		setTimeout('state()',500);
+	}
+}
+ 
+function Initial() {
+	var now = new Date();
+ 
+	req = '/scripts/IsapiExtPj.dll?S';
+	twait = (now.getSeconds() + 5) % 60;
+	setTimeout('state()',500);
+ 
+	mute_pic_State = false;
+	mute_snd_State = false;
+	mute_osd_State = false;
+	power_on_waiting = false;
+}
+ 
+function powerOn() {
+	power_on_waiting = true;
+	swapimg('power_on','./images/power_on_g.png');
+	swapimg('power_off','./images/power_off_b.png');
+	execCGI('/scripts/IsapiExtPj.dll?D=%05%02%00%00%00%00');
+}
+ 
+function powerOff(){
+	var res=confirm('Are you sure that you would like to turn off the projector?');
+	power_on_waiting = false;
+	if( res==true) {
+		swapimg('power_on','./images/power_on_b.png');
+		swapimg('power_off','./images/power_off_g.png');
+		clearSource();
+		clearMute();
+		execCGI('/scripts/IsapiExtPj.dll?D=%05%02%01%00%00%00');
+	}
+}
+ 
+function selectSource(name, cgi) {
+	clearSource();
+	swapimg(name, './images/' + name + '_a.png');
+	clearMute();
+	execCGI(cgi);
+}
+ 
+function changeVolume(flag) {
+	swapimg('mute_snd','./images/mute_snd.png');
+	mute_snd_Status = false;
+	if ( flag == true) {
+		execCGI('/scripts/IsapiExtPj.dll?D=%0A%03%10%00%00%05%05%FF%01%03%00');
+	} else {
+		execCGI('/scripts/IsapiExtPj.dll?D=%0A%03%10%00%00%05%05%FF%01%FD%FF');
+	}
+}
+ 
+function changeMutePic() {
+	if ( mute_pic_State == true) {
+		swapimg('mute_pic','./images/mute_pic.png');
+		mute_pic_State = false;
+		execCGI('/scripts/IsapiExtPj.dll?D=%05%02%11%00%00%00');
+	} else {
+		swapimg('mute_pic','./images/mute_pic_m.png');
+		mute_pic_State = true;
+		execCGI('/scripts/IsapiExtPj.dll?D=%05%02%10%00%00%00');
+	}
+}
+ 
+function changeMuteSnd() {
+	if ( mute_snd_State == true) {
+		swapimg('mute_snd','./images/mute_snd.png');
+		mute_snd_State = false;
+		execCGI('/scripts/IsapiExtPj.dll?D=%05%02%13%00%00%00');
+	} else {
+		swapimg('mute_snd','./images/mute_snd_m.png');
+		mute_snd_State = true;
+		execCGI('/scripts/IsapiExtPj.dll?D=%05%02%12%00%00%00');
+	}
+}
+ 
+function changeMuteOsd() {
+	if ( mute_osd_State == true) {
+		swapimg('mute_osd','./images/mute_osd.png');
+		mute_osd_State = false;
+		execCGI('/scripts/IsapiExtPj.dll?D=%05%02%15%00%00%00');
+	} else {
+		swapimg('mute_osd','./images/mute_osd_m.png');
+		mute_osd_State = true;
+		execCGI('/scripts/IsapiExtPj.dll?D=%05%02%14%00%00%00');
+	}
+}
+ 
+function changeMuteAll(flag) {
+	if (flag == false) {
+		swapimg('mute_pic','./images/mute_pic.png');
+		mute_pic_State = false;
+		swapimg('mute_snd','./images/mute_snd.png');
+		mute_snd_State = false;
+		swapimg('mute_osd','./images/mute_osd.png');
+		mute_osd_State = false;
+		execCGI('/scripts/IsapiExtPj.dll?D=OFF');
+	} else {
+		swapimg('mute_pic','./images/mute_pic_m.png');
+		mute_pic_State = true;
+		swapimg('mute_snd','./images/mute_snd_m.png');
+		mute_snd_State = true;
+		swapimg('mute_osd','./images/mute_osd_m.png');
+		mute_osd_State = true;
+		execCGI('/scripts/IsapiExtPj.dll?D=ON');
+	}
+}
+ 
+function swapimg(name,filename) {
+	eval("document." + name + ".src='" + filename + "'");
+}
+ 
+function clearSource() {
+	swapimg('src_comp1','./images/src_comp1.png');
+	swapimg('src_comp2','./images/src_comp2.png');
+	swapimg('src_comp3','./images/src_comp3.png');
+	swapimg('src_vid','./images/src_vid.png');
+	swapimg('src_svid','./images/src_svid.png');
+	swapimg('src_view','./images/src_view.png');
+	swapimg('src_network','./images/src_network.png');
+	swapimg('src_component','./images/src_component.png');
+}
+ 
+function clearMute() {
+	swapimg('mute_pic','./images/mute_pic.png');
+	mute_pic_State = false;
+	swapimg('mute_snd','./images/mute_snd.png');
+	mute_snd_State = false;
+	swapimg('mute_osd','./images/mute_osd.png');
+	mute_osd_State = false;
+}
+ 
+//-->
+</script>
