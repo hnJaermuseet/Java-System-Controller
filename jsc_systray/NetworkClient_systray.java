@@ -99,9 +99,6 @@ public class NetworkClient_systray {
 				in = new BufferedReader(
 						new InputStreamReader(socket.getInputStream()));
 				connected = true;
-			} catch (UnknownHostException e) {
-				System.out.println("Unknown host: " + srvadr);
-				System.exit(1);
 			} catch  (IOException e) {
 				System.out.println("No I/O. " + e);
 				try {
