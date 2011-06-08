@@ -13,7 +13,10 @@ import jsc_controller.Log;
 /**
  * Communication with Projection Design projector
  * 
- * Supports Projection Design F30 (tested on part no 101-1405-08)
+ * Supports 
+ * - Projection Design F30 (tested on part no 101-1405-08)
+ * - Projection Design F20 (tested on a F20 "720 wide graphics", LAN firmware version: 003-0006-01)
+ * 
  * Uses the projectors web interface over network to turn on/off and get status
  * 
  * The web interface uses POST for turning on or off but GET also works.
@@ -53,7 +56,8 @@ public class ProjectorPDCom implements ProjectorCom
 	
 	public int state ()
 	{
-		// Requests get.cgi first, that is what the web interface does
+		// Requests get.cgi first and wait
+		// (that is what the web interface does)
 		runPDCommand(ip, username, password, "get.cgi");
 		
 		// Waiting 3500 ms
@@ -110,6 +114,7 @@ public class ProjectorPDCom implements ProjectorCom
 	    			Log.saveLog("projectorPDCom", ip + ": Is off.");
 	        		return 2;
 	        	}
+	        	
 	        	if(is_on) // Is on
 	        	{
 	    			Log.saveLog("projectorPDCom", ip + ": Is on.");
