@@ -588,13 +588,13 @@ public class Jsc_controller {
 										line.substring(13));
 							}
 						}
-						else if (line.startsWith("projectorPD ") && line.length() > 9) {
+						else if (line.startsWith("projectorPD ") && line.length() > 12) {
 							try {	
-								ProjectorPD element = new ProjectorPD (line.substring(9));
+								ProjectorPD element = new ProjectorPD (line.substring(12));
 								this.addContentLastGroup(element);
 							} catch (CantFindMachine e) {
 								System.out.println("Can't find a config file for PD projector: " + 
-										line.substring(9));
+										line.substring(12));
 							}
 						}
 						else if (line.startsWith("projectorHitachi ") && line.length() > 17) {
