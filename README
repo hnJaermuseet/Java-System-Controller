@@ -21,6 +21,7 @@ v1.2 - New main interface. Includes only button for turning on/off some selected
 v1.2.2 - When turning on/off a group from main window, there can be displayed a message. Can also disable turn on/off for a group in main window. Also added logging of communications.
 v1.2.3 - Bug fix for NEC projectors. The projectors sometimes return no status and this made the program display the projector with an error. 
 v1.2.4 - Detailed view of machine, projectors, etc. Turn on/off Hitachi Cp-a100 is supported.
+v1.2.5 - Projection Design F20 is tested. Bug fix for groups.conf reader so that PD projectors har parsed correctly
 
 ## How it works ##
 - Client software (jsc_systray) runs on all computers we want controll over
@@ -56,3 +57,14 @@ wakeup_msg No wakeup
 wakeup_disabled
 
 etc.
+
+## Making / Deploying a new version of JSC ##
+
+- Commit your changes to the Git repository
+- Make the JAR file (export to JAR in Eclipse) and put it in the "jar" folder
+- Add a line in README (This file) about the new version (there is a list of version and what the changes where)
+- Commit the JAR file and the new README to repo with the message "Version X.Y.Z"
+- Open Git bash and run the following command:
+	git tag -m "Version X.Y.Z" vX.Y.Z
+- Open Git Gui and push to origin including tags (a little checkbox you have to check)
+- Go to the machine running JSC and download the JAR file from Github
