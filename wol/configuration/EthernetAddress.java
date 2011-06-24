@@ -19,6 +19,12 @@ import java.util.StringTokenizer;
  * @author <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#115;&#46;&#109;&#111;&#108;&#100;&#97;&#110;&#101;&#114;&#64;&#103;&#109;&#120;&#46;&#110;&#101;&#116;">Steffen Moldaner</a>
  */
 public class EthernetAddress implements Serializable, Cloneable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
 	private final static String ETHERNET_ADDRESS_DELIM = ":";
 	private final byte[] bytes;
 	

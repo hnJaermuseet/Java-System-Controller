@@ -39,12 +39,9 @@ package jsc_controller;
  */
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.FlowLayout;
 import java.awt.Toolkit;
-import java.io.FileNotFoundException;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -54,7 +51,13 @@ import jsc_server.Machine;
 import jsc_server.MenuItem;
 
 public class DynamicTree extends JPanel implements TreeSelectionListener {
-    protected DefaultMutableTreeNode rootNode;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
+	protected DefaultMutableTreeNode rootNode;
     protected DefaultTreeModel treeModel;
     protected JTree tree;
     private Toolkit toolkit = Toolkit.getDefaultToolkit();

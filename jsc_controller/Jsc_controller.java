@@ -5,12 +5,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Desktop;
 import java.io.*;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -77,7 +75,7 @@ public class Jsc_controller {
 	JTextField txt_projector_name;
 	JTextField txt_projector_ip;
 	JTextField txt_projector_username;
-	JPasswordField txt_projector_password;
+	JTextField txt_projector_password;
 
 	//Combo box
 	JComboBox projectorList;
@@ -526,20 +524,20 @@ public class Jsc_controller {
 			// Behandle
 			FileInputStream fis = null;
 			BufferedInputStream bis = null;
-			DataInputStream dis = null;
+			BufferedReader d = null;
 
 			try {
 				fis = new FileInputStream(groupsettings);
 
 				// Here BufferedInputStream is added for fast reading.
 				bis = new BufferedInputStream(fis);
-				dis = new DataInputStream(bis);
-				String line;
+				d = new BufferedReader(new InputStreamReader(bis));
+				
+				String line = d.readLine();
 				// dis.available() returns 0 if the file does not have more lines.
-				while (dis.available() != 0) {
+				while (line != null) {
 					// this statement reads the line from the file and print it to
 					// the console.
-					line = dis.readLine();
 					if(!line.equals(""))
 					{
 						if(line.startsWith("[") && line.length() > 2)
@@ -619,12 +617,14 @@ public class Jsc_controller {
 							}
 						}
 					}
+
+					line = d.readLine(); 
 				}
 
 				// dispose all the resources after using them.
 				fis.close();
 				bis.close();
-				dis.close();
+				d.close();
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -724,7 +724,7 @@ public class Jsc_controller {
 
 		public void updateTree ()
 		{
-			for (Enumeration e = rootNode.breadthFirstEnumeration(); e.hasMoreElements();) {
+			for (Enumeration<?> e = rootNode.breadthFirstEnumeration(); e.hasMoreElements();) {
 				DefaultMutableTreeNode c = (DefaultMutableTreeNode) e.nextElement();
 
 				treeModel.valueForPathChanged(
@@ -862,12 +862,13 @@ public class Jsc_controller {
 	}
 
 	private void writeToProjectorConfig(String ip, String name, String type) {
-
+		
 		// "(0)NEC","(1)HITACHI","(2)PD"
 		if (type.equals("NEC")) {
 
 			try {
 				ProjectorNEC projector = new ProjectorNEC(name, ip);
+				projector.getIp(); // Removes warning :-)
 			} catch (CantFindMachine e) {
 				System.out.println(e.getMessage());
 			}
@@ -876,6 +877,7 @@ public class Jsc_controller {
 			//TODO: Legge til Brukernavn og passord funksjon på akkuratt denne prosjektoren.
 			try {
 				ProjectorPD projector = new ProjectorPD(name, ip,projector_username,projector_password);
+				projector.getIp(); // Removes warning :-)
 			} catch (CantFindMachine e) {
 				System.out.println(e.getMessage());
 			}
@@ -884,6 +886,7 @@ public class Jsc_controller {
 			//TODO: Legge til Brukernavn og passord funksjon på akkuratt denne prosjektoren.
 			try {
 				ProjectorHitachi projector = new ProjectorHitachi(name, ip,projector_username,projector_password);
+				projector.getIp(); // Removes warning :-)
 			} catch (CantFindMachine e) {
 				System.out.println(e.getMessage());
 			}

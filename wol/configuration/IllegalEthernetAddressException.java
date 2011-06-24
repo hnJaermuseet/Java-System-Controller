@@ -11,6 +11,13 @@ package wol.configuration;
  */
 public class IllegalEthernetAddressException extends Exception {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
+
 	public IllegalEthernetAddressException() {
 		super();
 	}
